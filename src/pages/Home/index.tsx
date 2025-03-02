@@ -1,4 +1,3 @@
-import React from "react";
 import { Header, GithubLatest } from "./sections";
 
 export const HomePage = () => {

@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import WindowHeightSection from "../../../components/WindowHeightSection";
 import { request } from "@octokit/request";
 import { components } from "@octokit/openapi-types";
 import Markdown from "react-markdown";
