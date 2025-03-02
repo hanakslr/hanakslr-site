@@ -3,6 +3,11 @@ import { request } from "@octokit/request";
 import { components } from "@octokit/openapi-types";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import clsx from "clsx";
+import gitClosed from "../../../assets/icons/git_closed.svg";
+import gitDraft from "../../../assets/icons/git_draft.svg";
+import gitOpen from "../../../assets/icons/git_open.svg";
+import gitMerged from "../../../assets/icons/git_merged.svg";
 
 type PullRequest = components["schemas"]["issue-search-result-item"];
 
@@ -21,21 +26,79 @@ const fetchPublicPRs = async () => {
   return response.data.items;
 };
 
-const PrCard = ({ data }: { data: PullRequest }) => {
-  const projectName = data.repository_url.split("/").pop();
-  return (
-    <div className="flex w-full max-w-4xl flex-col gap-1 rounded-xl border p-4">
-      <div className="border-bottom flex flex-row justify-between">
-        <div>{projectName}</div>
-        <div>#{data.number}</div>
-      </div>
-      <div className="font-bold">{data.title}</div>
+type GitStatus = "Merged" | "Closed" | "Draft" | "Open";
 
-      {data.body && (
-        <div className="text-xs">
-          <Markdown remarkPlugins={[remarkGfm]}>{data.body}</Markdown>
-        </div>
+const getStatus = (pr: PullRequest) => {
+  if (pr.pull_request?.merged_at) return "Merged";
+  if (pr.state === "closed") return "Closed";
+  if (pr.draft) return "Draft";
+  if (pr.state === "open") return "Open";
+
+  return null;
+};
+
+const GitStatusBadge = ({ status }: { status: GitStatus }) => {
+  const icons = {
+    Draft: gitDraft,
+    Closed: gitClosed,
+    Open: gitOpen,
+    Merged: gitMerged,
+  };
+
+  return (
+    <div
+      className={clsx(
+        "flex items-center rounded-full p-1 text-xs text-white",
+        status === "Draft" && "bg-slate-600",
+        status === "Closed" && "bg-red-600",
+        status === "Merged" && "bg-purple-800",
+        status === "Open" && "bg-green-600",
       )}
+    >
+      <img
+        src={icons[status]}
+        alt={status}
+        className="h-4 w-4 brightness-0 invert"
+      />
+    </div>
+  );
+};
+
+const PrCard = ({ data }: { data: PullRequest }) => {
+  const repo = data.repository_url.split("/");
+  const projectName = repo.pop();
+  // const owner = repo.pop();
+
+  const status = getStatus(data);
+
+  return (
+    <a href={data.html_url} target="_blank" rel="noopener noreferrer">
+      <div className="flex w-full max-w-4xl flex-col rounded-xl border">
+        <div className="flex flex-row items-center justify-between gap-2 rounded-t-xl bg-gray-100 p-4 py-2 font-mono text-xs text-slate-700">
+          <div className="mr-auto">
+            {projectName}#{data.number}
+          </div>
+          {status && <GitStatusBadge status={status} />}
+        </div>
+        <div className="p-4">
+          <div className="font-bold">{data.title}</div>
+          {data.body && (
+            <article className="prose prose-p:my-1">
+              <div className="text-xs">
+                <Markdown remarkPlugins={[remarkGfm]}>{data.body}</Markdown>
+              </div>
+            </article>
+          )}
+        </div>
+      </div>
+    </a>
+  );
+};
+
+const DateLabel = ({ date }: { date: string }) => {
+  return (
+    <div className="px-4 py-1 text-center text-xs font-thin text-slate-400">
+      {date}
     </div>
   );
 };
@@ -44,18 +107,45 @@ export const Github = () => {
   const { data } = useQuery({
     queryKey: ["public_prs"],
     queryFn: fetchPublicPRs,
+    staleTime: 60 * 1000 * 4,
   });
 
-  console.log(data);
-
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-4 md:p-8">
-      <div className="flex h-full w-full flex-col items-center gap-4 rounded-xl border-2 border-red-500 p-2 py-4 md:gap-8 md:p-6 md:py-8">
+    <div className="flex min-h-svh w-full items-center justify-center p-2 sm:p-4 md:p-8">
+      <div className="flex h-full w-full flex-col items-center gap-4 rounded-xl border-purple-600 p-2 py-4 sm:border-2 md:gap-8 md:p-6 md:py-8">
         <h1 className="w-full text-center text-2xl font-bold">
           What I've been working on this month
         </h1>
         <div className="flex flex-col items-center gap-2 md:gap-4">
-          {data?.map((pr) => <PrCard data={pr} key={pr.id} />)}
+          {data &&
+            Object.entries(
+              data.reduce<Record<string, PullRequest[]>>((groups, pr) => {
+                const date = new Date(pr.created_at).toLocaleDateString(
+                  "en-US",
+                  {
+                    month: "2-digit",
+                    day: "2-digit",
+                    year: "numeric",
+                  },
+                );
+                if (!groups[date]) {
+                  groups[date] = [];
+                }
+                groups[date].push(pr);
+                return groups;
+              }, {}),
+            )
+              .sort(([dateA], [dateB]) => dateB.localeCompare(dateA))
+              .map(([date, prs]) => (
+                <div key={date} className="w-full">
+                  <DateLabel date={date} />
+                  <div className="flex flex-col gap-3">
+                    {prs.map((pr) => (
+                      <PrCard data={pr} key={pr.id} />
+                    ))}
+                  </div>
+                </div>
+              ))}
         </div>
         <div className="text-sm">
           {"+ super secret stuff (private contributions not shown)"}
