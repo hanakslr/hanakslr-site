@@ -4,10 +4,12 @@ import { components } from "@octokit/openapi-types";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import clsx from "clsx";
-import gitClosed from "../../../assets/icons/git_closed.svg";
-import gitDraft from "../../../assets/icons/git_draft.svg";
-import gitOpen from "../../../assets/icons/git_open.svg";
-import gitMerged from "../../../assets/icons/git_merged.svg";
+import {
+  IconGitPullRequest,
+  IconGitMerge,
+  IconGitPullRequestDraft,
+  IconGitPullRequestClosed,
+} from "@tabler/icons-react";
 
 type PullRequest = components["schemas"]["issue-search-result-item"];
 
@@ -38,13 +40,7 @@ const getStatus = (pr: PullRequest) => {
 };
 
 const GitStatusBadge = ({ status }: { status: GitStatus }) => {
-  const icons = {
-    Draft: gitDraft,
-    Closed: gitClosed,
-    Open: gitOpen,
-    Merged: gitMerged,
-  };
-
+  const iconProps = { size: 14 };
   return (
     <div
       className={clsx(
@@ -55,11 +51,10 @@ const GitStatusBadge = ({ status }: { status: GitStatus }) => {
         status === "Open" && "bg-green-600",
       )}
     >
-      <img
-        src={icons[status]}
-        alt={status}
-        className="h-4 w-4 brightness-0 invert"
-      />
+      {status == "Draft" && <IconGitPullRequestDraft {...iconProps} />}
+      {status == "Closed" && <IconGitPullRequestClosed {...iconProps} />}
+      {status == "Open" && <IconGitPullRequest {...iconProps} />}
+      {status == "Merged" && <IconGitMerge {...iconProps} />}
     </div>
   );
 };
@@ -74,14 +69,14 @@ const PrCard = ({ data }: { data: PullRequest }) => {
   return (
     <a href={data.html_url} target="_blank" rel="noopener noreferrer">
       <div className="flex w-full max-w-4xl flex-col rounded-xl border">
-        <div className="flex flex-row items-center justify-between gap-2 rounded-t-xl bg-gray-100 p-4 py-2 font-mono text-xs text-slate-700">
+        <div className="flex flex-row items-center justify-between gap-2 rounded-t-xl bg-slate-50 p-4 py-2 font-mono text-xs text-slate-700">
           <div className="mr-auto">
             {projectName}#{data.number}
           </div>
           {status && <GitStatusBadge status={status} />}
         </div>
         <div className="p-4">
-          <div className="font-bold">{data.title}</div>
+          <div className="font-medium">{data.title}</div>
           {data.body && (
             <article className="prose prose-p:my-1">
               <div className="text-xs">
@@ -97,7 +92,7 @@ const PrCard = ({ data }: { data: PullRequest }) => {
 
 const DateLabel = ({ date }: { date: string }) => {
   return (
-    <div className="px-4 py-1 text-center text-xs font-thin text-slate-400">
+    <div className="px-4 py-1 text-center text-xs font-thin text-slate-500">
       {date}
     </div>
   );
@@ -112,7 +107,7 @@ export const Github = () => {
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-2 sm:p-4 md:p-8">
-      <div className="flex h-full w-full flex-col items-center gap-4 rounded-xl border-purple-600 p-2 py-4 sm:border-2 md:gap-8 md:p-6 md:py-8">
+      <div className="flex h-full w-full flex-col items-center gap-4 rounded-xl border-purple-200 p-2 py-4 sm:border-2 md:gap-8 md:p-6 md:py-8">
         <h1 className="w-full text-center text-2xl font-bold">
           What I've been working on this month
         </h1>
