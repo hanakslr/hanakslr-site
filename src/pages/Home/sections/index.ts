@@ -1,4 +1,4 @@
 import { Header } from "./Header";
-import { GithubLatest } from "./GithubLatest";
+import { Github } from "./Github";
 
-export { Header, GithubLatest };
+export { Header, Github as GithubLatest };

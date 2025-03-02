@@ -1,4 +1,3 @@
-import React from "react";
 import WindowHeightSection from "../../../components/WindowHeightSection";
 
 export const Header = () => {
