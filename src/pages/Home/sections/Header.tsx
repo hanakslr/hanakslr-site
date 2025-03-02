@@ -1,14 +1,13 @@
 import WindowHeightSection from "../../../components/WindowHeightSection";
-import linkedin from "../../../assets/icons/linkedin.svg";
-import github from "../../../assets/icons/github.svg";
+import { IconBrandGithub, IconBrandLinkedin } from "@tabler/icons-react";
 
 const PROFILES = [
   {
     name: "linkedin",
-    icon: linkedin,
+    icon: IconBrandLinkedin,
     url: "https://www.linkedin.com/in/hanakslr",
   },
-  { name: "github", icon: github, url: "https://github.com/hanakslr" },
+  { name: "github", icon: IconBrandGithub, url: "https://github.com/hanakslr" },
 ];
 export const Header = () => {
   return (
@@ -21,7 +20,7 @@ export const Header = () => {
         <div className="flex flex-row gap-4 py-3">
           {PROFILES.map((p) => (
             <a href={p.url} target="_blank" rel="noopener noreferrer">
-              <img src={p.icon} alt={p.name} className="h-5 w-5" />
+              <p.icon className="h-6 w-6" />
             </a>
           ))}
         </div>

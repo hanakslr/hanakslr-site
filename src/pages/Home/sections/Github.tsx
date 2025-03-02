@@ -4,10 +4,12 @@ import { components } from "@octokit/openapi-types";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import clsx from "clsx";
-import gitClosed from "../../../assets/icons/git_closed.svg";
-import gitDraft from "../../../assets/icons/git_draft.svg";
-import gitOpen from "../../../assets/icons/git_open.svg";
-import gitMerged from "../../../assets/icons/git_merged.svg";
+import {
+  IconGitPullRequest,
+  IconGitMerge,
+  IconGitPullRequestDraft,
+  IconGitPullRequestClosed,
+} from "@tabler/icons-react";
 
 type PullRequest = components["schemas"]["issue-search-result-item"];
 
@@ -38,13 +40,7 @@ const getStatus = (pr: PullRequest) => {
 };
 
 const GitStatusBadge = ({ status }: { status: GitStatus }) => {
-  const icons = {
-    Draft: gitDraft,
-    Closed: gitClosed,
-    Open: gitOpen,
-    Merged: gitMerged,
-  };
-
+  const iconProps = { size: 14 };
   return (
     <div
       className={clsx(
@@ -55,11 +51,10 @@ const GitStatusBadge = ({ status }: { status: GitStatus }) => {
         status === "Open" && "bg-green-600",
       )}
     >
-      <img
-        src={icons[status]}
-        alt={status}
-        className="h-4 w-4 brightness-0 invert"
-      />
+      {status == "Draft" && <IconGitPullRequestDraft {...iconProps} />}
+      {status == "Closed" && <IconGitPullRequestClosed {...iconProps} />}
+      {status == "Open" && <IconGitPullRequest {...iconProps} />}
+      {status == "Merged" && <IconGitMerge {...iconProps} />}
     </div>
   );
 };
