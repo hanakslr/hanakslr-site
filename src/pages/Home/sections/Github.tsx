@@ -108,9 +108,14 @@ export const Github = () => {
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-2 sm:p-4 md:p-8">
       <div className="flex h-full w-full flex-col items-center gap-4 rounded-xl border-purple-200 p-2 py-4 sm:border-2 md:gap-8 md:p-6 md:py-8">
-        <h1 className="w-full text-center text-2xl font-bold">
-          What I've been working on this month
-        </h1>
+        <div className="flex flex-col items-center gap-2 text-center">
+          <h1 className="w-full text-center text-2xl font-bold">
+            What I've been working on lately
+          </h1>
+          <h3 className="font-mono text-xs text-slate-700">
+            Pull requests from the last month
+          </h3>
+        </div>
         <div className="flex flex-col items-center gap-2 md:gap-4">
           {data &&
             Object.entries(
