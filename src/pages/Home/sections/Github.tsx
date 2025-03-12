@@ -120,7 +120,7 @@ export const Github = () => {
           {data &&
             Object.entries(
               data.reduce<Record<string, PullRequest[]>>((groups, pr) => {
-                const date = new Date(pr.created_at).toLocaleDateString(
+                const date = new Date(pr.updated_at).toLocaleDateString(
                   "en-US",
                   {
                     month: "2-digit",
