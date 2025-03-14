@@ -11,11 +11,18 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as RustwasmImport } from './routes/rust_wasm'
 import { Route as IndexImport } from './routes/index'
 import { Route as PostsIndexImport } from './routes/posts/index'
 import { Route as PostsSlugImport } from './routes/posts/$slug'
 
 // Create/Update Routes
+
+const RustwasmRoute = RustwasmImport.update({
+  id: '/rust_wasm',
+  path: '/rust_wasm',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -46,6 +53,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/rust_wasm': {
+      id: '/rust_wasm'
+      path: '/rust_wasm'
+      fullPath: '/rust_wasm'
+      preLoaderRoute: typeof RustwasmImport
+      parentRoute: typeof rootRoute
+    }
     '/posts/$slug': {
       id: '/posts/$slug'
       path: '/posts/$slug'
@@ -67,12 +81,14 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/rust_wasm': typeof RustwasmRoute
   '/posts/$slug': typeof PostsSlugRoute
   '/posts': typeof PostsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/rust_wasm': typeof RustwasmRoute
   '/posts/$slug': typeof PostsSlugRoute
   '/posts': typeof PostsIndexRoute
 }
@@ -80,27 +96,30 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/rust_wasm': typeof RustwasmRoute
   '/posts/$slug': typeof PostsSlugRoute
   '/posts/': typeof PostsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/posts/$slug' | '/posts'
+  fullPaths: '/' | '/rust_wasm' | '/posts/$slug' | '/posts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/posts/$slug' | '/posts'
-  id: '__root__' | '/' | '/posts/$slug' | '/posts/'
+  to: '/' | '/rust_wasm' | '/posts/$slug' | '/posts'
+  id: '__root__' | '/' | '/rust_wasm' | '/posts/$slug' | '/posts/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RustwasmRoute: typeof RustwasmRoute
   PostsSlugRoute: typeof PostsSlugRoute
   PostsIndexRoute: typeof PostsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RustwasmRoute: RustwasmRoute,
   PostsSlugRoute: PostsSlugRoute,
   PostsIndexRoute: PostsIndexRoute,
 }
@@ -116,12 +135,16 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/rust_wasm",
         "/posts/$slug",
         "/posts/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/rust_wasm": {
+      "filePath": "rust_wasm.tsx"
     },
     "/posts/$slug": {
       "filePath": "posts/$slug.tsx"
