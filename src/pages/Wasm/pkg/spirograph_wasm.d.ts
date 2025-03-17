@@ -1,12 +1,21 @@
 /* tslint:disable */
 /* eslint-disable */
-export function greet(): string;
+export function generate_svg(): string;
+export class Spirograph {
+  private constructor();
+  free(): void;
+  width(): number;
+  height(): number;
+}
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly greet: () => [number, number];
+  readonly __wbg_spirograph_free: (a: number, b: number) => void;
+  readonly spirograph_width: (a: number) => number;
+  readonly spirograph_height: (a: number) => number;
+  readonly generate_svg: () => [number, number];
   readonly __wbindgen_export_0: WebAssembly.Table;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_start: () => void;

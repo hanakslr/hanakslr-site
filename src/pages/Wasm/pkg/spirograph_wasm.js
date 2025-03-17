@@ -20,16 +20,49 @@ function getStringFromWasm0(ptr, len) {
 /**
  * @returns {string}
  */
-export function greet() {
+export function generate_svg() {
     let deferred1_0;
     let deferred1_1;
     try {
-        const ret = wasm.greet();
+        const ret = wasm.generate_svg();
         deferred1_0 = ret[0];
         deferred1_1 = ret[1];
         return getStringFromWasm0(ret[0], ret[1]);
     } finally {
         wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+const SpirographFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_spirograph_free(ptr >>> 0, 1));
+
+export class Spirograph {
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        SpirographFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_spirograph_free(ptr, 0);
+    }
+    /**
+     * @returns {number}
+     */
+    width() {
+        const ret = wasm.spirograph_width(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    height() {
+        const ret = wasm.spirograph_height(this.__wbg_ptr);
+        return ret >>> 0;
     }
 }
 
@@ -76,6 +109,9 @@ function __wbg_get_imports() {
         table.set(offset + 2, true);
         table.set(offset + 3, false);
         ;
+    };
+    imports.wbg.__wbindgen_throw = function(arg0, arg1) {
+        throw new Error(getStringFromWasm0(arg0, arg1));
     };
 
     return imports;
