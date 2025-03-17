@@ -1,0 +1,15 @@
+{
+  "name": "spirograph-wasm",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "spirograph_wasm_bg.wasm",
+    "spirograph_wasm.js",
+    "spirograph_wasm.d.ts"
+  ],
+  "main": "spirograph_wasm.js",
+  "types": "spirograph_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
