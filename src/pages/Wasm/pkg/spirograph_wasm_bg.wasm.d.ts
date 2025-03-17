@@ -3,6 +3,7 @@
 export const memory: WebAssembly.Memory;
 export const __wbg_spirograph_free: (a: number, b: number) => void;
 export const spirograph_new: (a: number, b: number) => number;
+export const spirograph_draw: (a: number) => void;
 export const generate_svg: () => [number, number];
 export const __wbindgen_exn_store: (a: number) => void;
 export const __externref_table_alloc: () => number;

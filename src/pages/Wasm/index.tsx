@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import init, { Spirograph } from "./pkg/spirograph_wasm";
 
 export const WasmPage = () => {
   useEffect(() => {
     init().then(() => {
       const spiro = new Spirograph("spiro-canvas");
+      spiro.draw();
     });
   }, []);
   return (

@@ -4,6 +4,7 @@ export function generate_svg(): string;
 export class Spirograph {
   free(): void;
   constructor(canvas_id: string);
+  draw(): void;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -12,6 +13,7 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_spirograph_free: (a: number, b: number) => void;
   readonly spirograph_new: (a: number, b: number) => number;
+  readonly spirograph_draw: (a: number) => void;
   readonly generate_svg: () => [number, number];
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
