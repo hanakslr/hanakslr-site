@@ -2,10 +2,8 @@
 /* eslint-disable */
 export function generate_svg(): string;
 export class Spirograph {
-  private constructor();
   free(): void;
-  width(): number;
-  height(): number;
+  constructor(canvas_id: string);
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -13,10 +11,13 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_spirograph_free: (a: number, b: number) => void;
-  readonly spirograph_width: (a: number) => number;
-  readonly spirograph_height: (a: number) => number;
+  readonly spirograph_new: (a: number, b: number) => number;
   readonly generate_svg: () => [number, number];
-  readonly __wbindgen_export_0: WebAssembly.Table;
+  readonly __wbindgen_exn_store: (a: number) => void;
+  readonly __externref_table_alloc: () => number;
+  readonly __wbindgen_export_2: WebAssembly.Table;
+  readonly __wbindgen_malloc: (a: number, b: number) => number;
+  readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_start: () => void;
 }

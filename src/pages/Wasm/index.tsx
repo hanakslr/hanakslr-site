@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import init, { generate_svg } from "./pkg/spirograph_wasm";
+import init, { Spirograph } from "./pkg/spirograph_wasm";
 
 export const WasmPage = () => {
-  const [svg, setSvg] = useState("");
-
   useEffect(() => {
     init().then(() => {
-      setSvg(generate_svg());
+      const spiro = new Spirograph("spiro-canvas");
     });
   }, []);
   return (
     <div>
-      <div dangerouslySetInnerHTML={{ __html: svg }} />
+      <canvas
+        id="spiro-canvas"
+        width="500"
+        height="500"
+        style={{ border: "1px solid black" }}
+      ></canvas>
     </div>
   );
 };
