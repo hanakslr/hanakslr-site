@@ -166,21 +166,6 @@ function getDataViewMemory0() {
     }
     return cachedDataViewMemory0;
 }
-/**
- * @returns {string}
- */
-export function generate_svg() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.generate_svg();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
 
 const SpirographFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
@@ -210,8 +195,19 @@ export class Spirograph {
         SpirographFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
-    draw() {
-        wasm.spirograph_draw(this.__wbg_ptr);
+    clear() {
+        wasm.spirograph_clear(this.__wbg_ptr);
+    }
+    /**
+     * @param {number} inner_r
+     * @param {number} offset
+     * @param {number | null} [phase_angle]
+     * @param {string | null} [stroke_color]
+     */
+    draw_single(inner_r, offset, phase_angle, stroke_color) {
+        var ptr0 = isLikeNone(stroke_color) ? 0 : passStringToWasm0(stroke_color, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len0 = WASM_VECTOR_LEN;
+        wasm.spirograph_draw_single(this.__wbg_ptr, inner_r, offset, !isLikeNone(phase_angle), isLikeNone(phase_angle) ? 0 : phase_angle, ptr0, len0);
     }
 }
 
@@ -259,6 +255,9 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_canvas_9bbcdb94a977807a = function(arg0) {
         const ret = arg0.canvas;
         return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
+    };
+    imports.wbg.__wbg_clearRect_8e4ba7ea0e06711a = function(arg0, arg1, arg2, arg3, arg4) {
+        arg0.clearRect(arg1, arg2, arg3, arg4);
     };
     imports.wbg.__wbg_document_d249400bd7bd996d = function(arg0) {
         const ret = arg0.document;
@@ -309,12 +308,18 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_lineTo_2fc468a0e2210784 = function(arg0, arg1, arg2) {
         arg0.lineTo(arg1, arg2);
     };
-    imports.wbg.__wbg_moveTo_123c5e7629da2e1e = function(arg0, arg1, arg2) {
-        arg0.moveTo(arg1, arg2);
+    imports.wbg.__wbg_log_c222819a41e063d3 = function(arg0) {
+        console.log(arg0);
     };
     imports.wbg.__wbg_newnoargs_105ed471475aaf50 = function(arg0, arg1) {
         const ret = new Function(getStringFromWasm0(arg0, arg1));
         return ret;
+    };
+    imports.wbg.__wbg_setlineWidth_ec730c524f09baa9 = function(arg0, arg1) {
+        arg0.lineWidth = arg1;
+    };
+    imports.wbg.__wbg_setstrokeStyle_415833f3f0eb5076 = function(arg0, arg1, arg2) {
+        arg0.strokeStyle = getStringFromWasm0(arg1, arg2);
     };
     imports.wbg.__wbg_static_accessor_GLOBAL_88a902d13a557d07 = function() {
         const ret = typeof global === 'undefined' ? null : global;
@@ -358,6 +363,10 @@ function __wbg_get_imports() {
     };
     imports.wbg.__wbindgen_is_undefined = function(arg0) {
         const ret = arg0 === undefined;
+        return ret;
+    };
+    imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
+        const ret = getStringFromWasm0(arg0, arg1);
         return ret;
     };
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {

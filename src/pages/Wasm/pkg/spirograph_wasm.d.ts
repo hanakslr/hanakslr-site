@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
-export function generate_svg(): string;
 export class Spirograph {
   free(): void;
   constructor(canvas_id: string);
-  draw(): void;
+  clear(): void;
+  draw_single(inner_r: number, offset: number, phase_angle?: number | null, stroke_color?: string | null): void;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -13,14 +13,13 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_spirograph_free: (a: number, b: number) => void;
   readonly spirograph_new: (a: number, b: number) => number;
-  readonly spirograph_draw: (a: number) => void;
-  readonly generate_svg: () => [number, number];
+  readonly spirograph_clear: (a: number) => void;
+  readonly spirograph_draw_single: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
-  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_start: () => void;
 }
 
