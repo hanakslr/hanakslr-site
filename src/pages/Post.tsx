@@ -5,7 +5,44 @@ import ReactMarkdown from "react-markdown";
 import frontMatter from "front-matter";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { dracula } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import TabbedCodeBlock, { CodeSnippet } from "../components/TabbedCodeBlock";
 
+const CodeBlock = ({ className, children, inline, ...props }: any) => {
+  const match = /language-(\w+)/.exec(className || "");
+  if (!inline && match) {
+    const languages = match[1].split("|"); // Use `|` to separate languages
+    const snippets: CodeSnippet[] = children
+      .trim()
+      .split("\n\n---\n\n")
+      .map((code: string, i: number) => ({
+        language: languages[i] || "plaintext",
+        code,
+        name: i,
+      }));
+
+    console.log(snippets);
+
+    return <TabbedCodeBlock snippets={snippets} {...props} />;
+    // return (
+    //   <SyntaxHighlighter
+    //     style={dracula}
+    //     PreTag="div"
+    //     language={match[1]}
+    //     {...props}
+    //   >
+    //     {String(children).replace(/\n$/, "")}
+    //   </SyntaxHighlighter>
+    // );
+  }
+  return (
+    <code className={className} {...props}>
+      {children}
+    </code>
+  );
+};
 export default function Post() {
   const post = useLoaderData({ from: "/posts/$slug" });
 
@@ -39,7 +76,13 @@ export default function Post() {
             </p>
           </header>
           <article className="prose">
-            <ReactMarkdown remarkPlugins={[remarkGfm, remarkFrontmatter]}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm, remarkFrontmatter]}
+              rehypePlugins={[rehypeRaw]}
+              components={{
+                code: CodeBlock,
+              }}
+            >
               {post.content}
             </ReactMarkdown>
           </article>

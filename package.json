@@ -11,6 +11,7 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\""
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.0",
     "@octokit/request": "^9.2.2",
     "@tabler/icons-react": "^3.30.0",
     "@tailwindcss/typography": "^0.5.10",
@@ -19,9 +20,12 @@
     "@tanstack/react-router": "^1.112.0",
     "clsx": "^2.1.1",
     "front-matter": "^4.0.2",
+    "prismjs": "^1.30.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-markdown": "^10.0.0",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^15.6.1",
+    "rehype-raw": "^7.0.0",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1"
   },
@@ -33,6 +37,7 @@
     "@types/node": "^22.13.8",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.21.0",

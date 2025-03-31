@@ -35,7 +35,7 @@ _WASM is a sandboxed execution environment. What do I and don't I have access to
 
 It all seems to come down to bindings. As the name suggests, bindings _bind_ to external functionality. For example, in standard Rust you might use the `println` macro to print something to the terminal.
 
-```
+```rust
 println!("Spirographs are fun!")
 ```
 
@@ -47,7 +47,7 @@ We also need to pass the browser something that it can comprehend - hence the co
 
 ## TODO put cargo.toml here in a separate file and make this actually runnable.
 
-```
+```rust
 // Imports
 // use wasm_bindgen::JsValue;
 // use web_sys::{console};
@@ -56,6 +56,10 @@ console::log_1(&JsValue::from_str(&format!(
    "Parameters - inner_r: {}, offset: {}, phase_angle: {}",
    inner_r, offset, phase_angle
 )));
+
+---
+
+cargo.toml things here
 ```
 
 Along the same reasoning, WASM because it doesn't support async natively. But we can use `wasm-bindgen-futures` to rely on Javascript promises through the provided bindings if we need to do anything async.
