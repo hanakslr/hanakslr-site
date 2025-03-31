@@ -8,7 +8,7 @@ import {
   TabPanels,
   TabPanelProps,
 } from "@headlessui/react";
-import SyntaxHighlighter from "react-syntax-highlighter";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 export interface CodeSnippet {
