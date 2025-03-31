@@ -42,13 +42,18 @@ const TabPanel = (props: TabPanelProps) => {
   );
 };
 
-const TabbedCodeBlock: React.FC<TabbedCodeBlockProps> = ({
-  snippets,
-  ...props
-}) => {
+export const CodeBlock = ({ snippet }: { snippet: CodeSnippet }) => {
+  return (
+    <SyntaxHighlighter language={snippet.language} PreTag="div" style={dracula}>
+      {String(snippet.code).replace(/\n$/, "")}
+    </SyntaxHighlighter>
+  );
+};
+
+const TabbedCodeBlock: React.FC<TabbedCodeBlockProps> = ({ snippets }) => {
   return (
     <TabGroup>
-      <TabList className="flex gap-4 bg-slate-600">
+      <TabList className="flex gap-4 rounded-full">
         {snippets.map((s) => (
           <Tab key={s.name}>{s.name}</Tab>
         ))}
@@ -56,14 +61,7 @@ const TabbedCodeBlock: React.FC<TabbedCodeBlockProps> = ({
       <TabPanels className="">
         {snippets.map((s) => (
           <TabPanel key={s.name}>
-            <SyntaxHighlighter
-              language={s.language}
-              PreTag="div"
-              style={dracula}
-              {...props}
-            >
-              {String(s.code).replace(/\n$/, "")}
-            </SyntaxHighlighter>
+            <CodeBlock snippet={s} />
           </TabPanel>
         ))}
       </TabPanels>

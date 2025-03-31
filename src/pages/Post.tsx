@@ -6,7 +6,10 @@ import frontMatter from "front-matter";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import TabbedCodeBlock, { CodeSnippet } from "../components/TabbedCodeBlock";
+import TabbedCodeBlock, {
+  CodeSnippet,
+  CodeBlock,
+} from "../components/TabbedCodeBlock";
 
 function parseProperties(input: string): {
   properties: Record<string, string>;
@@ -33,7 +36,12 @@ function parseProperties(input: string): {
   return { properties, remainingText };
 }
 
-const CodeBlock = ({ className, children, inline, ...props }: any) => {
+const CodeMarkdownComponent = ({
+  className,
+  children,
+  inline,
+  ...props
+}: any) => {
   const match = /language-(\w+)/.exec(className || "");
 
   if (!inline && match) {
@@ -51,7 +59,8 @@ const CodeBlock = ({ className, children, inline, ...props }: any) => {
         };
       });
 
-    return <TabbedCodeBlock snippets={snippets} {...props} />;
+    if (snippets.length == 1) return <CodeBlock snippet={snippets[0]} />;
+    return <TabbedCodeBlock snippets={snippets} />;
   }
   return (
     <code className={className} {...props}>
@@ -96,7 +105,7 @@ export default function Post() {
               remarkPlugins={[remarkGfm, remarkFrontmatter]}
               rehypePlugins={[rehypeRaw]}
               components={{
-                code: CodeBlock,
+                code: CodeMarkdownComponent,
               }}
             >
               {post.content}
