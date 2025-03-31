@@ -4,15 +4,24 @@ subtitle: Math is fun and learning new things is fun so let's do both
 publishedOn: 2025-03-27
 ---
 
-Today I'm feeling its time for a condensed learning burst on something new, very low stakes, and kind of silly.
+Today I'm feeling its time for a condensed learning burst on something new.
 
-When I was a kid I had a spirograph toy. The circle with the different size gears with the offset holes that make the spinny designs. Let's build a rust utility that makes a spirograph, and then compile that into WASM, and then use it in a react app (this website).
+When I was a kid I had a spirograph toy. The circle with the different size gears with the offset holes that make the spinny designs.
+
+<figure class="flex flex-col items-end text-xs italic">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Spirograph_Salesman_in_Kochi.jpg/1920px-Spirograph_Salesman_in_Kochi.jpg" alt="Spirograph toy" class="max-w-2xl" />
+  <figcaption>
+    Image by <a href="//commons.wikimedia.org/wiki/User:Jay.Jarosz" title="User:Jay.Jarosz">Jay.Jarosz</a>
+  </figcaption>
+</figure>
+
+Let's build a rust utility that makes a spirograph, and then compile that into WASM, and then use it in a react app (this website).
 
 There are a number of practical considerations that I'm throwing out the window here - namely that this type of drawing is frankly much easier to do nicely in Javascript and React itself, given it's not that computationally expensive. But I already know how to do that, and today we are learning something new.
 
-## The starting point
+## About WebAssembly (WASM)
 
-I don't know much about WASM - other than Rust can compile to it, and Javascript can execute it. It can get a lot better performance than Javascript and is beneficial for computationally expensive stuff that you want to do in the browser. We won't be doing any heavy lifting today, but thats the primary motivator for exploring this.
+I don't know much about WASM other than Rust can compile to it, and Javascript can execute it. It can get a lot better performance than Javascript and is beneficial for doing computationally expensive stuff in the browser. We won't be doing any heavy lifting today, but thats the primary motivator for exploring this.
 
 According to the docs: https://webassembly.org/
 
@@ -22,46 +31,53 @@ According to the docs: https://webassembly.org/
 
 Basically our wasm compiler is going to take the rust code, and compile it into a lower level, assembly like language, that the browser can execute. It isn't that Javascript itself with execute it - our React app will **invoke** it and then the browser will execute it.
 
-#### Some resources I'm using
+### Some resources I'm using
 
-- [This video](https://www.youtube.com/watch?v=qQMc3C1tJgw) is helpful!
+- [This video](https://www.youtube.com/watch?v=qQMc3C1tJgw) is helpful! Walks through the basic plumbing of getting some Rust code to render Hello World from React.
 - [This blog](https://surma.dev/things/rust-to-webassembly/) is interesting, though I'm going to go a different direction. (But, as an aside a++ love the styling, interesting context)
 
 ## Bindings
 
-As I'm researching an over-arching question that has come up -
+As I'm researching an over-arching question that has come up:
 
 _WASM is a sandboxed execution environment. What do I and don't I have access to?_
 
-It all seems to come down to bindings. As the name suggests, bindings _bind_ to external functionality. For example, in standard Rust you might use the `println` macro to print something to the terminal.
+It all seems to come down to bindings. As the name suggests, bindings _bind_ to external functionality. This isn't unique to rust and wasm. There are bindings to c++ libs, and javascript libraries, and more. Its just a way to interact with non-rust code inside of rust.
+
+As a basic example, in standard Rust we might use the `println` macro to print something to the terminal.
 
 ```rust
 println!("Spirographs are fun!");
 ```
 
-But when you are running in the browser, you don't have a terminal - here's where bindings come in.
+But when we are running in the browser, there is no terminal - here's where bindings come in.
 
 In our case, the `web-sys` crate provides bindings to the APIs that browers have. So knowing that we are going to be running in the terminal, we can use the `web-sys` crate to access the _browsers_ console.
 
 We also need to pass the browser something that it can comprehend - hence the construction of `JsValue`.
 
-## TODO put cargo.toml here in a separate file and make this actually runnable.
-
 ```rust|plaintext
-#@title=main.rs
-// Imports
-// use wasm_bindgen::JsValue;
-// use web_sys::{console};
+#@title=lib.rs
+use wasm_bindgen::JsValue;
+use web_sys::{console};
 
-console::log_1(&JsValue::from_str(&format!(
-   "Parameters - inner_r: {}, offset: {}, phase_angle: {}",
-   inner_r, offset, phase_angle
-)));
+#[wasm_bindgen]
+pub fn greet(name: &str) {
+   console::log_1(&JsValue::from_str(&format!(
+      "Hello, {}!",
+      name
+   )));
+}
+
 
 ---
 
 #@title=cargo.toml
-cargo.toml things here
+// ...
+
+[dependencies]
+wasm-bindgen = "0.2"
+web-sys = { version = "0.3.77", features=["console"]}
 ```
 
 Along the same reasoning, WASM because it doesn't support async natively. But we can use `wasm-bindgen-futures` to rely on Javascript promises through the provided bindings if we need to do anything async.
