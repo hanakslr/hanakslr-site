@@ -6,43 +6,63 @@ import frontMatter from "front-matter";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+// import TabbedCodeBlock, { CodeSnippet } from "../components/TabbedCodeBlock";
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
+import rust from "react-syntax-highlighter/dist/cjs/languages/prism/rust";
 import { dracula } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import TabbedCodeBlock, { CodeSnippet } from "../components/TabbedCodeBlock";
 
-const CodeBlock = ({ className, children, inline, ...props }: any) => {
-  const match = /language-(\w+)/.exec(className || "");
-  if (!inline && match) {
-    const languages = match[1].split("|"); // Use `|` to separate languages
-    const snippets: CodeSnippet[] = children
-      .trim()
-      .split("\n\n---\n\n")
-      .map((code: string, i: number) => ({
-        language: languages[i] || "plaintext",
-        code,
-        name: i,
-      }));
+SyntaxHighlighter.registerLanguage("tsx", rust);
 
-    console.log(snippets);
+// const CodeBlock = ({ className, children, inline, ...props }: any) => {
+//   const match = /language-(\w+)/.exec(className || "");
 
-    return <TabbedCodeBlock snippets={snippets} {...props} />;
-    // return (
-    //   <SyntaxHighlighter
-    //     style={dracula}
-    //     PreTag="div"
-    //     language={match[1]}
-    //     {...props}
-    //   >
-    //     {String(children).replace(/\n$/, "")}
-    //   </SyntaxHighlighter>
-    // );
-  }
-  return (
-    <code className={className} {...props}>
-      {children}
-    </code>
-  );
-};
+//   if (!inline && match) {
+//     console.log("matched");
+//     return (
+//       <SyntaxHighlighter
+//         style={dracula}
+//         PreTag="div"
+//         language={match[1]}
+//         {...props}
+//       >
+//         {String(children).replace(/\n$/, "")}
+//       </SyntaxHighlighter>
+//     );
+//   }
+
+//   if (!inline && match) {
+//     const languages = match[1].split("|"); // Use `|` to separate languages
+//     const snippets: CodeSnippet[] = children
+//       .trim()
+//       .split("\n\n---\n\n")
+//       .map((code: string, i: number) => ({
+//         language: languages[i] || "plaintext",
+//         code,
+//         name: i,
+//       }));
+
+//     console.log(snippets);
+//     console.log(props);
+//     console.log(children);
+
+//     // return <TabbedCodeBlock snippets={snippets} {...props} />;
+//     return (
+//       <SyntaxHighlighter
+//         style={dracula}
+//         PreTag="div"
+//         language={match[1]}
+//         {...props}
+//       >
+//         {String(children).replace(/\n$/, "")}
+//       </SyntaxHighlighter>
+//     );
+//   }
+//   return (
+//     <code className={className} {...props}>
+//       {children}
+//     </code>
+//   );
+// };
 export default function Post() {
   const post = useLoaderData({ from: "/posts/$slug" });
 
@@ -80,7 +100,24 @@ export default function Post() {
               remarkPlugins={[remarkGfm, remarkFrontmatter]}
               rehypePlugins={[rehypeRaw]}
               components={{
-                code: CodeBlock,
+                code({ node, className, children, ...props }) {
+                  const hasLang = /language-(\w+)/.exec(className || "");
+
+                  return hasLang ? (
+                    <SyntaxHighlighter
+                      style={dracula}
+                      language={hasLang[1]}
+                      PreTag="div"
+                      className="codeStyle"
+                      showLineNumbers={true}
+                      useInlineStyles={true}
+                    >
+                      {String(children).replace(/\n$/, "")}
+                    </SyntaxHighlighter>
+                  ) : (
+                    <code className={className} {...props} />
+                  );
+                },
               }}
             >
               {post.content}

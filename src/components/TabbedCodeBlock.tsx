@@ -19,7 +19,6 @@ export interface CodeSnippet {
 
 interface TabbedCodeBlockProps {
   snippets: CodeSnippet[];
-  props: any;
 }
 
 const Tab = (props: TabProps) => {
@@ -45,7 +44,7 @@ const TabPanel = (props: TabPanelProps) => {
 
 const TabbedCodeBlock: React.FC<TabbedCodeBlockProps> = ({
   snippets,
-  props,
+  ...props
 }) => {
   return (
     <TabGroup>

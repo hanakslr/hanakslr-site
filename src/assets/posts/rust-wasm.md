@@ -36,7 +36,7 @@ _WASM is a sandboxed execution environment. What do I and don't I have access to
 It all seems to come down to bindings. As the name suggests, bindings _bind_ to external functionality. For example, in standard Rust you might use the `println` macro to print something to the terminal.
 
 ```rust
-println!("Spirographs are fun!")
+println!("Spirographs are fun!");
 ```
 
 But when you are running in the browser, you don't have a terminal - here's where bindings come in.
