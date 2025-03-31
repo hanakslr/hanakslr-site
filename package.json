@@ -11,6 +11,9 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\""
   },
   "dependencies": {
+    "@codemirror/lang-rust": "^6.0.1",
+    "@codesandbox/sandpack-react": "^2.20.0",
+    "@codesandbox/sandpack-themes": "^2.0.21",
     "@headlessui/react": "^2.2.0",
     "@octokit/request": "^9.2.2",
     "@tabler/icons-react": "^3.30.0",

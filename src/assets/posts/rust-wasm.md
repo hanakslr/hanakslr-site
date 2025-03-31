@@ -1,10 +1,10 @@
 ---
-title: Rust, WASM, and React with spirographs
+title: Rust, WebAssembly, and React with spirographs
 subtitle: Math is fun and learning new things is fun so let's do both
 publishedOn: 2025-03-27
 ---
 
-Today I'm feeling its time for a condensed learning burst on something new.
+Today I'm feeling its time for a condensed learning burst on something new and I've been curious about Rust and WASM for awhile.
 
 When I was a kid I had a spirograph toy. The circle with the different size gears with the offset holes that make the spinny designs.
 
@@ -29,7 +29,7 @@ According to the docs: https://webassembly.org/
 
 > WebAssembly describes a memory-safe, sandboxed execution environment
 
-Basically our wasm compiler is going to take the rust code, and compile it into a lower level, assembly like language, that the browser can execute. It isn't that Javascript itself with execute it - our React app will **invoke** it and then the browser will execute it.
+Okay, so WASM is lower level browser-speak. Our wasm compiler is going to take the rust code, and compile it into a lower level, assembly like language, that the browser can execute. It isn't that Javascript itself with execute it - our React app will **invoke** it and then the browser will execute it.
 
 ### Some resources I'm using
 
@@ -42,7 +42,7 @@ As I'm researching an over-arching question that has come up:
 
 _WASM is a sandboxed execution environment. What do I and don't I have access to?_
 
-It all seems to come down to bindings. As the name suggests, bindings _bind_ to external functionality. This isn't unique to rust and wasm. There are bindings to c++ libs, and javascript libraries, and more. Its just a way to interact with non-rust code inside of rust.
+A lot of it comes down to bindings. As the name suggests, bindings _bind_ to external functionality. This isn't unique to rust and wasm. There are bindings to c++ libs, and javascript libraries, and more. Its just a way to interact with non-rust code inside of rust.
 
 As a basic example, in standard Rust we might use the `println` macro to print something to the terminal.
 
