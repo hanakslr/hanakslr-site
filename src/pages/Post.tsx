@@ -11,6 +11,7 @@ import TabbedCodeBlock, {
   CodeBlock,
 } from "../components/TabbedCodeBlock";
 import React from "react";
+import clsx from "clsx";
 
 // Utility type for header items
 interface TOCItem {
@@ -89,15 +90,22 @@ const TableOfContents = ({ items }: { items: TOCItem[] }) => {
       <h2 className="mb-2 text-sm font-semibold uppercase text-gray-500">
         On this page
       </h2>
-      <ul className="space-y-1">
+      <ul className="">
         {items.map((item) => (
           <li
             key={item.id}
-            className={`border-l-2 py-1 pl-3 text-sm transition-colors ${
+            className={clsx(
+              "border-l-2 py-1 pl-4 text-sm transition-colors",
               activeId === item.id
-                ? "border-yellow-400 text-yellow-400"
-                : "border-gray-200 text-gray-600 hover:text-yellow-400"
-            } ${item.level === 2 ? "" : "ml-" + (item.level - 2)} `}
+                ? "text-yellow-400"
+                : "text-gray-600 hover:text-yellow-400",
+              item.level == 2 ? "font-normal" : "font-light",
+              item.level == 2 &&
+                (activeId === item.id
+                  ? "border-yellow-400"
+                  : "border-gray-200"),
+              item.level == 3 && "pl-7",
+            )}
           >
             <a href={`#${item.id}`}>{item.text}</a>
           </li>
