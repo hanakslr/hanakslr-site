@@ -8,6 +8,31 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import TabbedCodeBlock, { CodeSnippet } from "../components/TabbedCodeBlock";
 
+function parseProperties(input: string): {
+  properties: Record<string, string>;
+  remainingText: string;
+} {
+  const regex = /^(#@(?:\w+=[^\n]*\n)*)\n?(.*)$/s; // Non-greedy property capture with correct stopping
+  const match = input.match(regex);
+
+  const properties: Record<string, string> = {};
+  const remainingText = match ? match[2] : input; // The second group captures remaining text
+
+  if (match && match[1]) {
+    match[1]
+      .trim()
+      .split("\n")
+      .forEach((line) => {
+        const [, key, value] = line.match(/^#@(\w+)=(.*)$/) || [];
+        if (key && value) {
+          properties[key.trim()] = value.trim();
+        }
+      });
+  }
+
+  return { properties, remainingText };
+}
+
 const CodeBlock = ({ className, children, inline, ...props }: any) => {
   const match = /language-(\w+)/.exec(className || "");
 
@@ -16,11 +41,15 @@ const CodeBlock = ({ className, children, inline, ...props }: any) => {
     const snippets: CodeSnippet[] = children
       .trim()
       .split("\n\n---\n\n")
-      .map((code: string, i: number) => ({
-        language: languages[i] || "plaintext",
-        code,
-        name: i,
-      }));
+      .map((code: string, i: number) => {
+        const { properties, remainingText } = parseProperties(code);
+
+        return {
+          language: languages[i] || "plaintext",
+          code: remainingText,
+          name: properties.title || i,
+        };
+      });
 
     return <TabbedCodeBlock snippets={snippets} {...props} />;
   }

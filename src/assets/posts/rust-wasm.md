@@ -47,7 +47,8 @@ We also need to pass the browser something that it can comprehend - hence the co
 
 ## TODO put cargo.toml here in a separate file and make this actually runnable.
 
-```rust
+```rust|plaintext
+#@title=main.rs
 // Imports
 // use wasm_bindgen::JsValue;
 // use web_sys::{console};
@@ -59,6 +60,7 @@ console::log_1(&JsValue::from_str(&format!(
 
 ---
 
+#@title=cargo.toml
 cargo.toml things here
 ```
 
