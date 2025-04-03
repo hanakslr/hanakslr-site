@@ -1,23 +1,18 @@
 ---
-title: Rust, WebAssembly, and React with spirographs
+title: "Spirographs: Rust, WebAssembly, and React"
 subtitle: Math is fun and learning new things is fun so let's do both
 publishedOn: 2025-03-27
+coverImage:
+  src: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Spirograph_Salesman_in_Kochi.jpg/1920px-Spirograph_Salesman_in_Kochi.jpg"
+  alt: "Spirograph toy"
+  source: "Image by Jay.Jarosz"
 ---
 
 Today I'm feeling its time for a condensed learning burst on something new and I've been curious about Rust and WASM for awhile.
 
-When I was a kid I had a spirograph toy. The circle with the different size gears with the offset holes that make the spinny designs.
+When I was a kid I had a spirograph toy. The circle with the different size gears with the offset holes that make the spinny designs. Let's build a Rust library that makes a spirograph, and then compile that into WASM, and then use it in a React app (this website).
 
-<figure class="flex flex-col items-end text-xs italic">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Spirograph_Salesman_in_Kochi.jpg/1920px-Spirograph_Salesman_in_Kochi.jpg" alt="Spirograph toy" class="max-w-2xl" />
-  <figcaption>
-    Image by <a href="//commons.wikimedia.org/wiki/User:Jay.Jarosz" title="User:Jay.Jarosz">Jay.Jarosz</a>
-  </figcaption>
-</figure>
-
-Let's build a rust utility that makes a spirograph, and then compile that into WASM, and then use it in a react app (this website).
-
-There are a number of practical considerations that I'm throwing out the window here - namely that this type of drawing is frankly much easier to do nicely in Javascript and React itself, given it's not that computationally expensive. But I already know how to do that, and today we are learning something new.
+There are a number of practical considerations that I'm throwing out the window here - namely that this type of drawing is nicer in Javascript and React itself, given it's not that computationally expensive. But I already know how to do that, and today we are learning something new.
 
 ## About WebAssembly (WASM)
 
