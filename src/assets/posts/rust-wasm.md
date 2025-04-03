@@ -84,10 +84,13 @@ Along the same reasoning, WASM because it doesn't support async natively. But we
 
 ## The plumbing
 
-`cargo new strava-stats --lib`
+First, we make our new package, At this point, I'm just following the Youtube tutorial linked above.
 
-I'm just following the youtube tutorial at this point - we add `wasm-bindings` as a dependency, this creates the bindings for WASM. And we set the library type to be `cdylib.
-commit - strava-stats:11a87c57f283eb80d2b71dd62761d64e7b3449d3
+```sh
+cargo new spirograph-wasm --lib
+```
+
+We add `wasm-bindings` as a dependency and we set the library type to be `cdylib`.
 
 Once we have built the package we can pull it in.
 here we can see that we have our Hello, World! hanakslr-site:70394e8ddd19c731cc5fe7cd1896f9d89d6ec3f3

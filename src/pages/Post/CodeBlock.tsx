@@ -99,6 +99,8 @@ export const CodeMarkdownComponent = ({
             ]}
             showLineNumbers={false}
             wrapContent
+            readOnly
+            showReadOnly={false}
             showTabs={showFiles}
             style={
               snippets.length === 1
