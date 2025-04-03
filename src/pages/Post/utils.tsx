@@ -36,8 +36,7 @@ export const extractHeadings = (markdown: string): TOCItem[] => {
     }
     if (inCodeBlock) return false;
 
-    // Skip HTML content and non-heading lines
-    if (line.trim().startsWith("<")) return false;
+    // Only include heading lines
     if (!line.startsWith("#")) return false;
     if (line.startsWith("#@")) return false;
     return true;

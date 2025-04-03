@@ -75,6 +75,17 @@ wasm-bindgen = "0.2"
 web-sys = { version = "0.3.77", features=["console"]}
 ```
 
+Testing git
+
+```github
+commit: cfbf882b2a935dc554e4f2d3a2f074b1988517d6
+repo: hanakslr/spirograph-wasm
+files:
+  - file: src/lib.rs
+    entryFile: true
+  - file: Cargo.toml
+```
+
 Along the same reasoning, WASM because it doesn't support async natively. But we can use `wasm-bindgen-futures` to rely on Javascript promises through the provided bindings if we need to do anything async.
 
 ## The plumbing
