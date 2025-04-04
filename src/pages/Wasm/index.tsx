@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import init, { DrawingSpec, Spirograph } from "./pkg/spirograph_wasm";
+import init, { Spirograph } from "./pkg/spirograph_wasm";
 import Input from "../../components/Input";
 import ColorPicker from "../../components/ColorPicker";
 import Button from "../../components/Button";
@@ -7,7 +7,7 @@ import Label from "../../components/Label";
 
 export const WasmPage = () => {
   const [spiro, setSpiro] = useState<Spirograph>();
-  const [values, setValues] = useState<DrawingSpec>({
+  const [values, setValues] = useState({
     innerRadius: 25,
     phaseAngle: 0,
     offset: 50,
@@ -17,7 +17,12 @@ export const WasmPage = () => {
   useEffect(() => {
     init().then(() => {
       const newSpiro = new Spirograph("spiro-canvas");
-      newSpiro.draw_single(values);
+      newSpiro.draw_single(
+        values.innerRadius,
+        values.offset,
+        values.phaseAngle,
+        values.color,
+      );
       setSpiro(newSpiro);
     });
   }, []);

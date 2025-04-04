@@ -167,31 +167,6 @@ function getDataViewMemory0() {
     return cachedDataViewMemory0;
 }
 
-function _assertClass(instance, klass) {
-    if (!(instance instanceof klass)) {
-        throw new Error(`expected instance of ${klass.name}`);
-    }
-}
-
-const DrawingSpecFinalization = (typeof FinalizationRegistry === 'undefined')
-    ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_drawingspec_free(ptr >>> 0, 1));
-
-export class DrawingSpec {
-
-    __destroy_into_raw() {
-        const ptr = this.__wbg_ptr;
-        this.__wbg_ptr = 0;
-        DrawingSpecFinalization.unregister(this);
-        return ptr;
-    }
-
-    free() {
-        const ptr = this.__destroy_into_raw();
-        wasm.__wbg_drawingspec_free(ptr, 0);
-    }
-}
-
 const SpirographFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_spirograph_free(ptr >>> 0, 1));
@@ -224,12 +199,15 @@ export class Spirograph {
         wasm.spirograph_clear(this.__wbg_ptr);
     }
     /**
-     * @param {DrawingSpec} spec
+     * @param {number} inner_r
+     * @param {number} offset
+     * @param {number | null} [phase_angle]
+     * @param {string | null} [stroke_color]
      */
-    draw_single(spec) {
-        _assertClass(spec, DrawingSpec);
-        var ptr0 = spec.__destroy_into_raw();
-        wasm.spirograph_draw_single(this.__wbg_ptr, ptr0);
+    draw_single(inner_r, offset, phase_angle, stroke_color) {
+        var ptr0 = isLikeNone(stroke_color) ? 0 : passStringToWasm0(stroke_color, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len0 = WASM_VECTOR_LEN;
+        wasm.spirograph_draw_single(this.__wbg_ptr, inner_r, offset, !isLikeNone(phase_angle), isLikeNone(phase_angle) ? 0 : phase_angle, ptr0, len0);
     }
 }
 
