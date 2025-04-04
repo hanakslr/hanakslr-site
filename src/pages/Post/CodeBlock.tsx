@@ -140,14 +140,6 @@ export const CodeMarkdownComponent = ({
     return (
       <CodeDisplay
         snippets={language === "github" ? snippets : parsedSnippets || []}
-        entry={
-          language === "github"
-            ? snippets[0]?.name || "File 1"
-            : parsedSnippets?.[0]?.name || "File 1"
-        }
-        fitHeight={
-          (language === "github" ? snippets : parsedSnippets)?.length === 1
-        }
       />
     );
   }

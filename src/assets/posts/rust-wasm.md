@@ -84,7 +84,13 @@ Testing git
   "files": [
     {
       "file": "src/lib.rs",
-      "entryFile": true
+      "entryFile": true,
+      "decorators": [
+        {
+          "className": "highlight",
+          "line": 1
+        }
+      ]
     },
     {
       "file": "Cargo.toml"
