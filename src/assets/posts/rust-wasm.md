@@ -85,15 +85,9 @@ First, we make our new package, At this point, I'm just following the Youtube tu
 cargo new spirograph-wasm --lib
 ```
 
-We add `wasm-bindings` as a dependency and we set the library type to be `cdylib`. Just to test out the plumbing, we have make an extremely simple version that returns a random color.
+We add `wasm-bindings` as a dependency and we set the library type to be `cdylib`.
 
-# Put that code here. Both the rust lib and the react file.
-
-We can see that
-
-Testing git
-
-[[CustomComponent newthing="testout"]]
+[[Spirograph]]
 
 ```github
 {
@@ -122,3 +116,8 @@ Easy peasy! Onto the guts.
 ## After a pause
 
 Spirographs https://www.eddaardvark.co.uk/python_patterns/spirograph.html
+
+Workflow stickiness
+
+- Compiling the package and then using it is a pretty slow turn around in the era of hot reloading. Even with having a basic HTML alongside the library and serving up wiht a simple Python server makes it faster, and I'm sure tweaks could be made to always put the newest version of the library where its being used. It still feels like a clunky workflow.
+- Types are not exported. Methods on classes and such are, but typed structs (as all structs with named fields are in Rust) are not exported. There may be a way to get these to export, but the compiler doesn't include them just for the consumer to have them.

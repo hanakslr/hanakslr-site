@@ -1,5 +1,8 @@
+import { WasmPage } from "../../Wasm";
+
 const componentsMap: Record<string, React.FC<any>> = {
   CustomComponent: ({ ...props }) => <div {...props}>Yay Custom</div>,
+  Spirograph: WasmPage,
 };
 
 // Define the shortcode component separately
