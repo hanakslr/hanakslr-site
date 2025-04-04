@@ -47,60 +47,49 @@ async function fetchGitHubContent(
 }
 
 async function parseGitCodeBlock(content: string): Promise<CodeSnippet[]> {
-  const lines = content
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
+  try {
+    const { commit, repo, files } = JSON.parse(content);
+    const [owner, repoName] = repo.split("/");
 
-  let commit = "";
-  let repo = "";
-  let inFilesSection = false;
-  const filePaths: string[] = [];
+    const fetchPromises = files.map(
+      async (file: { file: string; entryFile?: boolean }) => {
+        try {
+          const code = await fetchGitHubContent(
+            owner,
+            repoName,
+            commit,
+            file.file,
+          );
+          return {
+            name: file.file,
+            language: file.file.split(".").pop() || "plaintext",
+            code,
+            title: commit && repo ? `${commit} | ${repo}` : undefined,
+          };
+        } catch (error: any) {
+          console.error(`Failed to fetch ${file.file}:`, error);
+          return {
+            name: file.file,
+            language: file.file.split(".").pop() || "plaintext",
+            code: `// Error loading file: ${error?.message}`,
+            title: commit && repo ? `${commit} | ${repo}` : undefined,
+          };
+        }
+      },
+    );
 
-  // First pass: collect metadata and file paths
-  for (const line of lines) {
-    if (line === "files:") {
-      inFilesSection = true;
-      continue;
-    }
-
-    if (!inFilesSection) {
-      if (line.startsWith("commit:")) {
-        commit = line.split(":")[1].trim();
-      } else if (line.startsWith("repo:")) {
-        repo = line.split(":")[1].trim();
-      }
-      continue;
-    }
-
-    if (line.startsWith("- file:")) {
-      filePaths.push(line.split(":")[1].trim());
-    }
+    return Promise.all(fetchPromises);
+  } catch (error) {
+    console.error("Failed to parse GitHub code block:", error);
+    return [
+      {
+        name: "Error",
+        language: "plaintext",
+        code: `// Error parsing GitHub code block: ${error}`,
+        title: "Error",
+      },
+    ];
   }
-
-  // Second pass: fetch all files in parallel
-  const [owner, repoName] = repo.split("/");
-  const fetchPromises = filePaths.map(async (filePath) => {
-    try {
-      const code = await fetchGitHubContent(owner, repoName, commit, filePath);
-      return {
-        name: filePath,
-        language: filePath.split(".").pop() || "plaintext",
-        code,
-        title: commit && repo ? `${commit} | ${repo}` : undefined,
-      };
-    } catch (error: any) {
-      console.error(`Failed to fetch ${filePath}:`, error);
-      return {
-        name: filePath,
-        language: filePath.split(".").pop() || "plaintext",
-        code: `// Error loading file: ${error?.message}`,
-        title: commit && repo ? `${commit} | ${repo}` : undefined,
-      };
-    }
-  });
-
-  return Promise.all(fetchPromises);
 }
 
 const parseCodeBlock = (allLanguages: string, children: string) => {

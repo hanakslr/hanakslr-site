@@ -10,7 +10,6 @@ import { rust } from "@codemirror/lang-rust";
 import { CodeSnippet } from "./CodeBlock";
 import { useState, useCallback, useEffect, useRef } from "react";
 import { IconMaximize, IconMinimize } from "@tabler/icons-react";
-import clsx from "clsx";
 
 interface CodeDisplayProps {
   snippets: CodeSnippet[];
