@@ -18,7 +18,7 @@ export const CodeDisplay = ({ snippets }: CodeDisplayProps) => {
   return (
     <div className="rounded-lg bg-slate-900 px-1 py-1">
       {snippets.length == 1 ? (
-        <CodeBlock snippet={snippets[0]} />
+        <CodeBlock snippet={snippets[0]} showLineNumbers={false} />
       ) : (
         <TabbedCodeBlock snippets={snippets} />
       )}

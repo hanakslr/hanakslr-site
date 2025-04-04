@@ -85,9 +85,35 @@ First, we make our new package, At this point, I'm just following the Youtube tu
 cargo new spirograph-wasm --lib
 ```
 
-We add `wasm-bindings` as a dependency and we set the library type to be `cdylib`.
+We add `wasm-bindings` as a dependency and we set the library type to be `cdylib` and populate a basic greet function.
 
-[[Spirograph]]
+```github
+{
+  "commit": "6bb87c70c9ca7d6a61a386b0029b3670cf1b1935",
+  "repo": "hanakslr/spirograph-wasm",
+  "files": [
+    {
+      "file": "src/lib.rs",
+      "entryFile": true
+    },
+    {
+      "file": "Cargo.toml"
+    }
+  ]
+}
+```
+
+After building the package
+
+```sh
+wasm-pack build --target web
+```
+
+it's simple to bring it in and consume it. The library even comes typed!\*
+
+Displays the following:
+
+[[HelloWasm]]
 
 ```github
 {

@@ -141,7 +141,13 @@ const TabPanel = (props: TabPanelProps) => {
   );
 };
 
-export const CodeBlock = ({ snippet }: { snippet: CodeSnippet }) => {
+export const CodeBlock = ({
+  snippet,
+  showLineNumbers = true,
+}: {
+  snippet: CodeSnippet;
+  showLineNumbers?: boolean;
+}) => {
   const editorRef = useRef<EditorView | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -167,6 +173,7 @@ export const CodeBlock = ({ snippet }: { snippet: CodeSnippet }) => {
                 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
             },
             ".cm-gutters": {
+              display: showLineNumbers ? "" : "none",
               backgroundColor: "#0f172a",
               borderRight: "1px solid #334155",
             },

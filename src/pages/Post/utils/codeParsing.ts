@@ -35,7 +35,7 @@ function parseProperties(input: string): {
 async function fetchGitHubContent(
   owner: string,
   repo: string,
-  commit: string,
+  commit: string = "main",
   filePath: string,
 ): Promise<string> {
   const url = `https://raw.githubusercontent.com/${owner}/${repo}/${commit}/${filePath}`;
