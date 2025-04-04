@@ -184,7 +184,8 @@ export const CodeBlock = ({ snippet }: { snippet: CodeSnippet }) => {
               fontSize: "16px",
             },
             ".cm-widgetBuffer": {
-              marginBottom: 0,
+              margin: 0,
+              height: 0,
             },
           }),
           tokyoNightStorm,
