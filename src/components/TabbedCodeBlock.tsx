@@ -14,12 +14,9 @@ import { tokyoNightStorm } from "@uiw/codemirror-theme-tokyo-night-storm";
 import { rust } from "@codemirror/lang-rust";
 import { IconFolder, IconFile } from "@tabler/icons-react";
 import clsx from "clsx";
-
-export interface CodeSnippet {
-  name: string;
-  language: string;
-  code: string;
-}
+import { CodeSnippet } from "../pages/Post/CodeBlock";
+import { foldEffect } from "@codemirror/language";
+import { lineNumbers, gutters } from "@codemirror/view";
 
 interface TabbedCodeBlockProps {
   snippets: CodeSnippet[];
@@ -152,6 +149,10 @@ export const CodeBlock = ({ snippet }: { snippet: CodeSnippet }) => {
           rust(),
           EditorView.editable.of(false),
           EditorView.lineWrapping,
+          lineNumbers(),
+          gutters({
+            fixed: true,
+          }),
           EditorView.theme({
             "&": {
               padding: "8px",
@@ -161,27 +162,57 @@ export const CodeBlock = ({ snippet }: { snippet: CodeSnippet }) => {
                 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
             },
             ".cm-gutters": {
-              display: "none",
+              backgroundColor: "#0f172a",
+              borderRight: "1px solid #334155",
             },
             ".cm-activeLine": {
               backgroundColor: "transparent",
+            },
+            ".cm-foldGutter": {
+              width: "1.2em",
+              minWidth: "1.2em",
+            },
+            ".cm-foldGutter .cm-gutterElement": {
+              padding: "0 0.3em",
+              color: "#64748b",
+            },
+            ".cm-foldPlaceholder": {
+              backgroundColor: "transparent",
+              //   border: "none",
+              fontSize: "16px",
+              border: "2px solid red",
+              marginRight: "0px",
             },
           }),
           tokyoNightStorm,
         ],
       });
 
-      editorRef.current = new EditorView({
+      const view = new EditorView({
         state,
         parent: containerRef.current,
       });
+
+      editorRef.current = view;
+
+      // Fold the specified ranges after the editor is created
+      if (snippet.foldRanges && view) {
+        snippet.foldRanges.forEach(([from, to]) => {
+          const fromPos = view.state.doc.line(from).to;
+          const toPos = view.state.doc.line(to).from;
+
+          view.dispatch({
+            effects: foldEffect.of({ from: fromPos, to: toPos }),
+          });
+        });
+      }
 
       return () => {
         editorRef.current?.destroy();
         editorRef.current = null;
       };
     }
-  }, [snippet.code]);
+  }, [snippet.code, snippet.foldRanges]);
 
   return (
     <div
@@ -192,7 +223,9 @@ export const CodeBlock = ({ snippet }: { snippet: CodeSnippet }) => {
 };
 
 const TabbedCodeBlock: React.FC<TabbedCodeBlockProps> = ({ snippets }) => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(
+    snippets.findIndex((s) => s.entry) || 0,
+  );
   const fileTree = buildFileTree(snippets);
   const showFileTree = snippets.some((s) => s.name.includes("/"));
 

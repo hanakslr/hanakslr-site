@@ -6,6 +6,8 @@ export interface CodeSnippet {
   language: string;
   code: string;
   title?: string;
+  entry?: boolean;
+  foldRanges?: [number, number][];
 }
 function parseProperties(input: string): {
   properties: Record<string, string>;
@@ -52,7 +54,11 @@ async function parseGitCodeBlock(content: string): Promise<CodeSnippet[]> {
     const [owner, repoName] = repo.split("/");
 
     const fetchPromises = files.map(
-      async (file: { file: string; entryFile?: boolean }) => {
+      async (file: {
+        file: string;
+        entryFile?: boolean;
+        foldRanges?: [number, number][];
+      }) => {
         try {
           const code = await fetchGitHubContent(
             owner,
@@ -64,7 +70,9 @@ async function parseGitCodeBlock(content: string): Promise<CodeSnippet[]> {
             name: file.file,
             language: file.file.split(".").pop() || "plaintext",
             code,
+            entry: file.entryFile,
             title: commit && repo ? `${commit} | ${repo}` : undefined,
+            foldRanges: file.foldRanges,
           };
         } catch (error: any) {
           console.error(`Failed to fetch ${file.file}:`, error);
