@@ -178,10 +178,13 @@ export const CodeBlock = ({ snippet }: { snippet: CodeSnippet }) => {
             },
             ".cm-foldPlaceholder": {
               backgroundColor: "transparent",
-              //   border: "none",
+              border: "none",
+              paddingLeft: "6px",
+              paddingRight: "6px",
               fontSize: "16px",
-              border: "2px solid red",
-              marginRight: "0px",
+            },
+            ".cm-widgetBuffer": {
+              marginBottom: 0,
             },
           }),
           tokyoNightStorm,
@@ -199,7 +202,10 @@ export const CodeBlock = ({ snippet }: { snippet: CodeSnippet }) => {
       if (snippet.foldRanges && view) {
         snippet.foldRanges.forEach(([from, to]) => {
           const fromPos = view.state.doc.line(from).to;
-          const toPos = view.state.doc.line(to).from;
+          const lineContent = view.state.doc.line(to).text;
+          const toPos =
+            view.state.doc.line(to).from +
+            (lineContent.match(/\S/)?.index ?? 0);
 
           view.dispatch({
             effects: foldEffect.of({ from: fromPos, to: toPos }),
