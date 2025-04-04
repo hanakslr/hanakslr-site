@@ -1,6 +1,6 @@
 ---
 title: "Spirographs: Rust, WebAssembly, and React"
-subtitle: Math is fun and learning new things is fun so let's do both
+subtitle: Math is fun and learning new things is fun so let's do both.
 publishedOn: 2025-03-27
 coverImage:
   src: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Spirograph_Salesman_in_Kochi.jpg/1920px-Spirograph_Salesman_in_Kochi.jpg"
@@ -24,7 +24,7 @@ According to the docs: https://webassembly.org/
 
 > WebAssembly describes a memory-safe, sandboxed execution environment
 
-Okay, so WASM is lower level browser-speak. Our wasm compiler is going to take the Rust code, and compile it into a lower level, assembly like language, that the browser can execute. It isn't that Javascript itself with execute it - our React app will **invoke** it and then the browser will execute it.
+Okay, so WASM is lower level browser-speak. Our WASM compiler is going to take the Rust code, and compile it into a lower level, assembly like language, that the browser can execute. It isn't that Javascript itself with execute it - our React app will **invoke** it and then the browser will execute it.
 
 ### Some resources I'm using
 
@@ -37,7 +37,7 @@ As I'm researching an over-arching question that has come up:
 
 _WASM is a sandboxed execution environment. What do I and don't I have access to?_
 
-A lot of it comes down to bindings. As the name suggests, bindings _bind_ to external functionality. This isn't unique to Rust and wasm. There are bindings to c++ libs, and javascript libraries, and more. Its just a way to interact with non-native code.
+A lot of it comes down to bindings. As the name suggests, bindings _bind_ to external functionality. This isn't unique to Rust and WASM. There are bindings to c++ libs, and javascript libraries, and more. Its just a way to interact with non-native code.
 
 As a basic example, in standard Rust we might use the `println` macro to print something to the terminal.
 
@@ -51,8 +51,7 @@ In our case, the `web-sys` crate provides bindings to the APIs that browers have
 
 We also need to pass the browser something that it can comprehend - hence the construction of `JsValue`. It's constructing the string in a way Javascript comprehends, not the WASM/Rust version we have in memory.
 
-```Rust|plaintext
-#@title=lib.rs
+```rust
 use wasm_bindgen::JsValue;
 use web_sys::{console};
 
@@ -63,29 +62,19 @@ pub fn greet(name: &str) {
       name
    )));
 }
-
-
----
-
-#@title=cargo.toml
-// ...
-
-[dependencies]
-wasm-bindgen = "0.2"
-web-sys = { version = "0.3.77", features=["console"]}
 ```
 
 If we needed to do anything async, we could use `wasm-bindgen-futures` to hook into Javascript Promises.
 
 ## The plumbing
 
-First, we make our new package, At this point, I'm just following the Youtube tutorial linked above.
+First, we make our new package, At this point, I'm just following the YouTube tutorial linked above.
 
 ```sh
 cargo new spirograph-wasm --lib
 ```
 
-We add `wasm-bindings` as a dependency and we set the library type to be `cdylib` and populate a basic greet function.
+We add `wasm-bindings` as a dependency and we set the library type to be `cdylib` and populate a basic greet function. The `#[wasm_bindgen]` is the glue between our Rust WASM and JS. It makes what it is applied to exposed in the end library.
 
 ```github
 {
@@ -103,17 +92,51 @@ We add `wasm-bindings` as a dependency and we set the library type to be `cdylib
 }
 ```
 
-After building the package
+Building the package with `wasm-pack build --target web`, a `pkg/` directory is generated with everything we need inside of it. Copying it to a place accesible to the React code, it's simple to bring it in and consume. The library even comes typed!\*
 
-```sh
-wasm-pack build --target web
+```github
+{
+  "commit": "e80d51362ade0a81db8ad5dac5b1933895502ed0",
+  "repo": "hanakslr/hanakslr-site",
+  "files": [
+    {
+      "file": "src/pages/Wasm/HelloWorldWasm.tsx"
+    }
+  ]
+}
 ```
 
-it's simple to bring it in and consume it. The library even comes typed!\*
-
-Displays the following:
+Results in:
 
 [[HelloWasm]]
+
+In just a couple steps, we've linked up our Rust code to React.
+
+## Spirographs
+
+At this point, I take a brief detour into math and refresh my memory on parametric equations. Surely something that I have not thought about since college.
+
+The concept behind a spirograph is that there is a single fixed circle, and then a smaller circle rotating inside of it. If you stray from these reality-based contraints, you can indeed get some [very cool results](https://www.eddaardvark.co.uk/python_patterns/spirograph.html). But to keep the math as simple as possible, we will stick with 2 gears - a larger fixed, and smaller one inside.
+
+#### Equations
+
+Ultimately, after consulting blogs and articles from those much wiser than I (and who have done real math much more recently) I use the following equations.
+
+I think one of the interesting parts about this is determining the number of rotations that are needed to make the pattern repeat in on itself, and what combinations require few rotations (those with a low common factor between them) and those that require many (prime numbers!).
+
+For example -
+1 rotation
+
+4 rotations
+
+a bunch of rotations
+
+#### Rendering
+
+There are a couple options for rendering. We could:
+
+- Generate an SVG and return that for the front end to render
+- Interact with a canvas element directly
 
 ```github
 {
@@ -134,14 +157,7 @@ Displays the following:
 }
 ```
 
-Once we have built the package we can pull it in.
-here we can see that we have our Hello, World! hanakslr-site:70394e8ddd19c731cc5fe7cd1896f9d89d6ec3f3
-
-Easy peasy! Onto the guts.
-
-## After a pause
-
-Spirographs https://www.eddaardvark.co.uk/python_patterns/spirograph.html
+Spirographs
 
 Workflow stickiness
 

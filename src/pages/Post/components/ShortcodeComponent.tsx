@@ -16,7 +16,8 @@ export const MarkdownShortcodeComponent = ({
   if (className === "shortcode" && name) {
     const Component = componentsMap[name];
     if (!Component) return <div>Unknown shortcode: {name}</div>;
-    return <Component {...props} />;
+    const { node, ...compProps } = props;
+    return <Component {...compProps} />;
   }
   return <div className={className} {...props} />;
 };
