@@ -85,9 +85,15 @@ First, we make our new package, At this point, I'm just following the Youtube tu
 cargo new spirograph-wasm --lib
 ```
 
-We add `wasm-bindings` as a dependency and we set the library type to be `cdylib`.
+We add `wasm-bindings` as a dependency and we set the library type to be `cdylib`. Just to test out the plumbing, we have make an extremely simple version that returns a random color.
+
+# Put that code here. Both the rust lib and the react file.
+
+We can see that
 
 Testing git
+
+[[CustomComponent newthing="testout"]]
 
 ```github
 {

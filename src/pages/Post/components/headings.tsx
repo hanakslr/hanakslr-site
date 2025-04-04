@@ -52,7 +52,7 @@ export const extractHeadings = (markdown: string): TOCItem[] => {
 };
 
 /* These add ids for nav */
-export const headingsComponents = {
+export const headingsMarkdownComponents = {
   h1: ({ children, ...props }: any) => (
     <h1 id={slugify(children)} {...props}>
       {children}

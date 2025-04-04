@@ -3,8 +3,13 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkFrontmatter from "remark-frontmatter";
 import rehypeRaw from "rehype-raw";
-import { extractHeadings, headingsComponents } from "./utils";
-import { CodeMarkdownComponent } from "./CodeBlock";
+import {
+  extractHeadings,
+  headingsMarkdownComponents,
+} from "./components/headings";
+import { MarkdownCodeComponent } from "./components/MarkdownCodeComponent";
+import { remarkShortcodes } from "./utils/remarkShortCodes";
+import { MarkdownShortcodeComponent } from "./components/ShortcodeComponent";
 
 interface BlogProps {
   title: string;
@@ -31,8 +36,9 @@ export function Blog({
 
   const defaultComponents = {
     pre: ({ children }: React.ComponentPropsWithoutRef<"pre">) => children,
-    ...headingsComponents,
-    code: CodeMarkdownComponent,
+    ...headingsMarkdownComponents,
+    code: MarkdownCodeComponent,
+    div: MarkdownShortcodeComponent,
     ...customComponents,
   };
 
@@ -71,7 +77,7 @@ export function Blog({
               <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent via-20% to-white" />
               {coverImage.source && (
                 <a
-                  href={`//commons.wikimedia.org/wiki/User:${coverImage.source}`}
+                  href={coverImage.source}
                   className="absolute right-4 top-4 text-sm text-gray-500 hover:text-blue-500"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -98,7 +104,7 @@ export function Blog({
           )}
           <article className="prose max-w-none md:p-8">
             <ReactMarkdown
-              remarkPlugins={[remarkGfm, remarkFrontmatter]}
+              remarkPlugins={[remarkGfm, remarkFrontmatter, remarkShortcodes]}
               rehypePlugins={[rehypeRaw]}
               components={defaultComponents}
             >

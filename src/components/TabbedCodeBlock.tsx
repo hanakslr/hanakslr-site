@@ -19,9 +19,9 @@ import {
   IconChevronRight,
 } from "@tabler/icons-react";
 import clsx from "clsx";
-import { CodeSnippet } from "../pages/Post/CodeBlock";
 import { foldEffect } from "@codemirror/language";
 import { lineNumbers, gutters } from "@codemirror/view";
+import { CodeSnippet } from "../pages/Post/utils/codeParsing";
 
 interface TabbedCodeBlockProps {
   snippets: CodeSnippet[];

@@ -1,6 +1,3 @@
-import { CodeDisplay } from "./CodeDisplay";
-import { useState, useEffect, useMemo } from "react";
-
 export interface CodeSnippet {
   name: string;
   language: string;
@@ -9,6 +6,7 @@ export interface CodeSnippet {
   entry?: boolean;
   foldRanges?: [number, number][];
 }
+
 function parseProperties(input: string): {
   properties: Record<string, string>;
   remainingText: string;
@@ -48,7 +46,9 @@ async function fetchGitHubContent(
   return response.text();
 }
 
-async function parseGitCodeBlock(content: string): Promise<CodeSnippet[]> {
+export async function parseGitCodeBlock(
+  content: string,
+): Promise<CodeSnippet[]> {
   try {
     const { commit, repo, files } = JSON.parse(content);
     const [owner, repoName] = repo.split("/");
@@ -100,7 +100,7 @@ async function parseGitCodeBlock(content: string): Promise<CodeSnippet[]> {
   }
 }
 
-const parseCodeBlock = (allLanguages: string, children: string) => {
+export const parseCodeBlock = (allLanguages: string, children: string) => {
   const languages = allLanguages.split("|"); // Use `|` to separate languages
   const snippets: CodeSnippet[] = children
     .trim()
@@ -117,43 +117,4 @@ const parseCodeBlock = (allLanguages: string, children: string) => {
     });
 
   return snippets;
-};
-
-export const CodeMarkdownComponent = ({
-  className,
-  children,
-  inline,
-  ...props
-}: any) => {
-  const match = /language-(\w+)/.exec(className || "");
-  const [snippets, setSnippets] = useState<CodeSnippet[]>([]);
-  const language = match ? match[1] : null;
-
-  // Memoize non-GitHub code parsing
-  const parsedSnippets = useMemo(() => {
-    if (!inline && language && language !== "github") {
-      return parseCodeBlock(language, children);
-    }
-    return null;
-  }, [inline, language, children]);
-
-  // Only run effect for GitHub content
-  useEffect(() => {
-    if (!inline && language === "github") {
-      parseGitCodeBlock(children).then(setSnippets);
-    }
-  }, [inline, language, children]);
-
-  if (!inline && match) {
-    return (
-      <CodeDisplay
-        snippets={language === "github" ? snippets : parsedSnippets || []}
-      />
-    );
-  }
-  return (
-    <code className={className} {...props}>
-      {children}
-    </code>
-  );
 };
