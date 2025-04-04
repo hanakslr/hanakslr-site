@@ -12,7 +12,12 @@ import { EditorView, basicSetup } from "codemirror";
 import { EditorState } from "@codemirror/state";
 import { tokyoNightStorm } from "@uiw/codemirror-theme-tokyo-night-storm";
 import { rust } from "@codemirror/lang-rust";
-import { IconFolder, IconFile } from "@tabler/icons-react";
+import {
+  IconFolder,
+  IconFile,
+  IconChevronLeft,
+  IconChevronRight,
+} from "@tabler/icons-react";
 import clsx from "clsx";
 import { CodeSnippet } from "../pages/Post/CodeBlock";
 import { foldEffect } from "@codemirror/language";
@@ -233,6 +238,7 @@ const TabbedCodeBlock: React.FC<TabbedCodeBlockProps> = ({ snippets }) => {
   const [selectedIndex, setSelectedIndex] = useState(
     snippets.findIndex((s) => s.entry) || 0,
   );
+  const [isFileTreeVisible, setIsFileTreeVisible] = useState(true);
   const fileTree = buildFileTree(snippets);
   const showFileTree = snippets.some((s) => s.name.includes("/"));
 
@@ -246,12 +252,34 @@ const TabbedCodeBlock: React.FC<TabbedCodeBlockProps> = ({ snippets }) => {
   return (
     <div className="flex flex-col lg:flex-row">
       {showFileTree && (
-        <div className="border-b border-gray-700 px-4 py-2 pr-6 lg:border-b-0 lg:border-r lg:p-4">
-          <FileTree
-            nodes={fileTree}
-            onSelect={handleFileSelect}
-            selectedFile={snippets[selectedIndex]?.name || ""}
-          />
+        <div
+          className={clsx(
+            "border-b border-gray-700 transition-all duration-200 lg:border-b-0 lg:border-r",
+            isFileTreeVisible ? "px-4 py-2 pr-6 lg:p-4" : "p-2",
+          )}
+        >
+          <div className="mb-2 flex items-center justify-between">
+            {isFileTreeVisible && (
+              <span className="text-xs text-gray-400">Files</span>
+            )}
+            <button
+              onClick={() => setIsFileTreeVisible(!isFileTreeVisible)}
+              className="rounded p-1 text-gray-400 hover:bg-white/5"
+            >
+              {isFileTreeVisible ? (
+                <IconChevronLeft size={16} />
+              ) : (
+                <IconChevronRight size={16} />
+              )}
+            </button>
+          </div>
+          {isFileTreeVisible && (
+            <FileTree
+              nodes={fileTree}
+              onSelect={handleFileSelect}
+              selectedFile={snippets[selectedIndex]?.name || ""}
+            />
+          )}
         </div>
       )}
       <div className="flex-1">
