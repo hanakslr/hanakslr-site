@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import init, { Spirograph } from "./pkg/spirograph_wasm";
+import { Spirograph } from "./pkg/spirograph_wasm";
 import { Tab, TabGroup, TabList } from "@headlessui/react";
+import { initWasm } from "./initSpirographWasm";
 
 interface DrawingOptions {
   innerRadius: number;
@@ -85,10 +86,13 @@ export const SpirographDisplay = () => {
   const [spiro, setSpiro] = useState<Spirograph>();
 
   useEffect(() => {
-    init().then(() => {
-      const newSpiro = new Spirograph("canvas-display");
+    async function setup(canvasId: string) {
+      const wasm = await initWasm(); // Only runs init once, reuses after
+      const newSpiro = new wasm.Spirograph(canvasId);
       setSpiro(newSpiro);
-    });
+    }
+
+    setup("canvas-display");
   }, []);
 
   useEffect(() => {
@@ -116,7 +120,7 @@ export const SpirographDisplay = () => {
         </TabList>
       </TabGroup>
       <div className="p-4 text-white">{OPTIONS[index].description}</div>
-      <canvas id={"canvas-display"} width={600} height={600}></canvas>
+      <canvas id={"canvas-display"} width={600} height={400}></canvas>
       <div className="mt-4 flex flex-row gap-4 text-sm">
         {OPTIONS[index].drawings.map((drawing, i) => (
           <div

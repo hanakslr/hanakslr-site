@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import init, { Spirograph } from "./pkg/spirograph_wasm";
+import { Spirograph } from "./pkg/spirograph_wasm";
 import Input from "../../components/Input";
 import ColorPicker from "../../components/ColorPicker";
 import Button from "../../components/Button";
 import Label from "../../components/Label";
 import clsx from "clsx";
+import { SpirographDisplay } from "./SpirographDisplay";
+import { initWasm } from "./initSpirographWasm";
 
 const initValues = {
   innerRadius: 25,
@@ -16,13 +18,12 @@ const initValues = {
 export const WasmPage = () => {
   const [spiro, setSpiro] = useState<Spirograph>();
   const [values, setValues] = useState(initValues);
-  const [canvasId] = useState(
-    `spiro-canvas-${Math.random().toString(36).slice(2, 8)}`,
-  );
+  const canvasId = `spiro-canvas-${Math.random().toString(36).slice(2, 8)}`;
 
   useEffect(() => {
-    init().then(() => {
-      const newSpiro = new Spirograph(canvasId);
+    async function setup() {
+      const wasm = await initWasm(); // Only runs init once, reuses after
+      const newSpiro = new wasm.Spirograph(canvasId);
       newSpiro.draw_single(
         values.innerRadius,
         values.offset,
@@ -30,7 +31,9 @@ export const WasmPage = () => {
         values.color,
       );
       setSpiro(newSpiro);
-    });
+    }
+
+    setup();
   }, []);
 
   return (
