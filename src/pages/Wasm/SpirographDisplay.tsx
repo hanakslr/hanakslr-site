@@ -19,7 +19,8 @@ interface Display {
 const OPTIONS: Display[] = [
   {
     title: "2 rotations",
-    description: "The common factor is 4",
+    description:
+      "The worked example above. The design makes 2 rotations before returning to its start.",
     drawings: [
       {
         innerRadius: 20,
@@ -32,7 +33,7 @@ const OPTIONS: Display[] = [
   {
     title: "Single rotation",
     description:
-      "An offset of 0 with a radius that is a multiple of the fixed radius only makes 1 rotation.",
+      "An inner radius that is a multiple of the fixed radius only makes 1 rotation. (50 + 150) / 50 = 200 / 50 = 20 / 5 = 4 / 1",
     drawings: [
       {
         innerRadius: 50,
@@ -106,7 +107,7 @@ export const SpirographDisplay = () => {
   }, [index, spiro]);
 
   return (
-    <div className="w-full rounded-lg bg-slate-800 p-4">
+    <div className="flex w-full flex-col items-center rounded-lg bg-slate-800 p-4">
       <TabGroup selectedIndex={index} onChange={setIndex}>
         <TabList className="flex items-center gap-4">
           {OPTIONS.map((o, index) => (
@@ -119,9 +120,11 @@ export const SpirographDisplay = () => {
           ))}
         </TabList>
       </TabGroup>
-      <div className="p-4 text-white">{OPTIONS[index].description}</div>
+      <div className="p-4 text-sm tracking-tight text-white">
+        {OPTIONS[index].description}
+      </div>
       <canvas id={"canvas-display"} width={600} height={400}></canvas>
-      <div className="mt-4 flex flex-row gap-4 text-sm">
+      <div className="mt-4 flex w-full flex-row gap-4 text-sm">
         {OPTIONS[index].drawings.map((drawing, i) => (
           <div
             key={i}

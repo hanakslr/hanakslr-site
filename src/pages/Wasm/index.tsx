@@ -42,7 +42,7 @@ export const WasmPage = () => {
         border: `2px solid ${values.color}`,
       }}
     >
-      <canvas id={canvasId} width={600} height={600}></canvas>
+      <canvas id={canvasId} width={600} height={500}></canvas>
 
       <div className={clsx("grid grid-cols-2 gap-4 px-4 lg:grid-cols-3")}>
         <Input
