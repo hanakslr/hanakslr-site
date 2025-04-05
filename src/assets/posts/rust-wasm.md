@@ -175,6 +175,10 @@ Spirographs
 
 [[Spirograph]]
 
+### A fun memory gotcha
+
+thx chatgpt for helping debug :)
+
 Workflow stickiness
 
 - Compiling the package and then using it is a pretty slow turn around in the era of hot reloading. Even with having a basic HTML alongside the library and serving up wiht a simple Python server makes it faster, and I'm sure tweaks could be made to always put the newest version of the library where its being used. It still feels like a clunky workflow.

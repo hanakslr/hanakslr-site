@@ -5,7 +5,6 @@ import ColorPicker from "../../components/ColorPicker";
 import Button from "../../components/Button";
 import Label from "../../components/Label";
 import clsx from "clsx";
-import { SpirographDisplay } from "./SpirographDisplay";
 import { initWasm } from "./initSpirographWasm";
 
 const initValues = {
