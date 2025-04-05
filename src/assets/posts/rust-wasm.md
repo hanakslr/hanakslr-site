@@ -92,7 +92,7 @@ We add `wasm-bindings` as a dependency and we set the library type to be `cdylib
 }
 ```
 
-Building the package with `wasm-pack build --target web`, a `pkg/` directory is generated with everything we need inside of it. Copying it to a place accesible to the React code, it's simple to bring it in and consume (though, see [a fun memory gotcha](#a-fun-memory-gotcha)). The library even comes typed![**](#considerations)
+Building the package with `wasm-pack build --target web`, a `pkg/` directory is generated with everything we need inside of it. Copying it to a place accesible to the React code, it's simple to bring it in and consume (though, see [a fun memory gotcha](#a-fun-memory-gotcha)). The library even comes mostly typed!
 
 ```github
 {
@@ -137,11 +137,11 @@ Where:
 | **r** | Radius of the rolling circle |
 | **p** | Offset from the center of the rolling circle to the tracing point |
 | **θ** | Angle of rotation |
-| **φ** | Phase angle - angular offset that adds rotation to the tracing point
+| **φ** | Phase angle - angular offset that adds rotation to the starting point
 
 I think one of the interesting parts about this is determining the number of rotations that are needed to make the pattern repeat on itself.
 
-The number of rotations is related to the ratio between $R$ and $r$. When the ratio $(r + R) / r$ as a fraction has a whole number on the denominator, that denominator is the number of rotations.
+The number of rotations is related to the ratio between $R$ (big fixed radius) and $r$ (little moving radius). When the ratio $(r + R) / r$ as a fraction has a whole number on the denominator, that denominator is the number of rotations.
 
 So, for the example below $r = 20, R=150$.
 
@@ -171,6 +171,8 @@ There are a couple options for rendering. We could:
 I chose to interact with a canvas element directly because I had future thoughts of exploring animation.
 
 Note in `Cargo.toml` that when working with `web-sys`, there is nearly nothing included in the default package - everything is behind a feature.
+
+This code is really only specific to drawing spirographs and is pretty compact so I don't have much more to say about it.
 
 ```github
 {
@@ -235,3 +237,6 @@ For performance, I could chose to construct as an SVG string (wiht batching and 
 
 - Compiling the package and then using it is a pretty slow turn around in the era of hot reloading. Even with having a basic HTML alongside the library and serving up wiht a simple Python server makes it faster, and I'm sure tweaks could be made to always put the newest version of the library where its being used. It still feels like a clunky workflow.
 - Types are not exported. Methods on classes and such are, but typed structs (as all structs with named fields are in Rust) are not exported. There may be a way to get these to export, but the compiler doesn't include them just for the consumer to have them.
+
+**Final thoughts**
+A fun and pretty quick exploration. Being my inaugural blog post on this site, it took longer to get the blog looking nice with all the components and styling and code than to get the spirograph spirograph-ing! But I think its an interesting tool to be aware of. In a previous life, I worked on a product that [rendered neurons and vessel networks](https://www.mbfbioscience.com/products/neurolucida-explorer) with thousands to millions of points, and ran analysis on them. This was all desktop based, but it is interesting to think about the bridge to local hardware in a time where aboslutely everything is cloud based and hosted.
