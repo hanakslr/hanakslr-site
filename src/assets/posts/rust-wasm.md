@@ -143,7 +143,7 @@ I think one of the interesting parts about this is determining the number of rot
 
 The number of rotations is related to the ratio between $R$ (big fixed radius) and $r$ (little moving radius). When the ratio $(r + R) / r$ as a fraction has a whole number on the denominator, that denominator is the number of rotations.
 
-So, for the example below $r = 20, R=150$.
+So, for the example below $r = 20, R=150$ (the big circle is not displayed).
 
 $$
 ratio = (r + R) / r
@@ -239,4 +239,5 @@ For performance, I could chose to construct as an SVG string (wiht batching and 
 - Types are not exported. Methods on classes and such are, but typed structs (as all structs with named fields are in Rust) are not exported. There may be a way to get these to export, but the compiler doesn't include them just for the consumer to have them.
 
 **Final thoughts**
+
 A fun and pretty quick exploration. Being my inaugural blog post on this site, it took longer to get the blog looking nice with all the components and styling and code than to get the spirograph spirograph-ing! But I think its an interesting tool to be aware of. In a previous life, I worked on a product that [rendered neurons and vessel networks](https://www.mbfbioscience.com/products/neurolucida-explorer) with thousands to millions of points, and ran analysis on them. This was all desktop based, but it is interesting to think about the bridge to local hardware in a time where aboslutely everything is cloud based and hosted.
