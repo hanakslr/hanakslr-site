@@ -2,7 +2,10 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkFrontmatter from "remark-frontmatter";
+import remarkMath from "remark-math";
 import rehypeRaw from "rehype-raw";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import {
   extractHeadings,
   headingsMarkdownComponents,
@@ -10,6 +13,7 @@ import {
 import { MarkdownCodeComponent } from "./components/MarkdownCodeComponent";
 import { remarkShortcodes } from "./utils/remarkShortCodes";
 import { MarkdownShortcodeComponent } from "./components/ShortcodeComponent";
+import "katex/dist/katex.min.css";
 
 interface BlogProps {
   title: string;
@@ -104,8 +108,13 @@ export function Blog({
           )}
           <article className="prose max-w-none md:p-8">
             <ReactMarkdown
-              remarkPlugins={[remarkGfm, remarkFrontmatter, remarkShortcodes]}
-              rehypePlugins={[rehypeRaw]}
+              remarkPlugins={[
+                remarkGfm,
+                remarkMath,
+                remarkFrontmatter,
+                remarkShortcodes,
+              ]}
+              rehypePlugins={[rehypeRaw, rehypeKatex]}
               components={defaultComponents}
             >
               {content}

@@ -122,14 +122,28 @@ The concept behind a spirograph is that there is a single fixed circle, and then
 
 Ultimately, after consulting blogs and articles from those much wiser than I (and who have done real math much more recently) I use the following equations.
 
+$$
+x = (R - r) \cdot \cos(\theta) + p \cdot \cos\left(\left(\frac{R - r}{r}\right)(\theta + \phi)\right)
+$$
+
+$$
+y = (R - r) \cdot \sin(\theta) + p \cdot \sin\left((\theta + \phi) \cdot \frac{R - r}{r}\right)
+$$
+
+Where:
+| Symbol | Meaning |
+|---------------|-------------------------------------------------------------------------|
+| **R** | Radius of the fixed outer circle |
+| **r** | Radius of the rolling circle |
+| **p** | Offset from the center of the rolling circle to the tracing point |
+| **θ** | Angle of rotation |
+| **φ** | Phase angle - angular offset that adds rotation to the tracing point
+
 I think one of the interesting parts about this is determining the number of rotations that are needed to make the pattern repeat in on itself, and what combinations require few rotations (those with a low common factor between them) and those that require many (prime numbers!).
 
 For example -
-1 rotation
 
-4 rotations
-
-a bunch of rotations
+[[SpirographGallery]]
 
 #### Rendering
 
@@ -158,6 +172,8 @@ There are a couple options for rendering. We could:
 ```
 
 Spirographs
+
+[[Spirograph]]
 
 Workflow stickiness
 

@@ -4,19 +4,25 @@ import Input from "../../components/Input";
 import ColorPicker from "../../components/ColorPicker";
 import Button from "../../components/Button";
 import Label from "../../components/Label";
+import clsx from "clsx";
+
+const initValues = {
+  innerRadius: 25,
+  phaseAngle: 0,
+  offset: 50,
+  color: "#f0abfc",
+};
 
 export const WasmPage = () => {
   const [spiro, setSpiro] = useState<Spirograph>();
-  const [values, setValues] = useState({
-    innerRadius: 25,
-    phaseAngle: 0,
-    offset: 50,
-    color: "#f0abfc",
-  });
+  const [values, setValues] = useState(initValues);
+  const [canvasId] = useState(
+    `spiro-canvas-${Math.random().toString(36).slice(2, 8)}`,
+  );
 
   useEffect(() => {
     init().then(() => {
-      const newSpiro = new Spirograph("spiro-canvas");
+      const newSpiro = new Spirograph(canvasId);
       newSpiro.draw_single(
         values.innerRadius,
         values.offset,
@@ -29,13 +35,14 @@ export const WasmPage = () => {
 
   return (
     <div
-      className="flex flex-col items-center justify-center rounded-xl"
+      className="flex max-h-screen flex-col items-center justify-center rounded-xl"
       style={{
         border: `2px solid ${values.color}`,
       }}
     >
-      <canvas id="spiro-canvas" width="600" height="600"></canvas>
-      <div className="grid grid-cols-2 gap-4 px-4 lg:grid-cols-3">
+      <canvas id={canvasId} width={600} height={600}></canvas>
+
+      <div className={clsx("grid grid-cols-2 gap-4 px-4 lg:grid-cols-3")}>
         <Input
           value={values.innerRadius}
           onChange={(v) =>

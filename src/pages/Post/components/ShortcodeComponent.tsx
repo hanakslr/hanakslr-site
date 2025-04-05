@@ -1,9 +1,11 @@
 import { WasmPage } from "../../Wasm";
 import { HelloWorldWasm } from "../../Wasm/HelloWorldWasm";
+import { SpirographDisplay } from "../../Wasm/SpirographDisplay";
 
 const componentsMap: Record<string, React.FC<any>> = {
   CustomComponent: ({ ...props }) => <div {...props}>Yay Custom</div>,
   Spirograph: WasmPage,
+  SpirographGallery: SpirographDisplay,
   HelloWasm: HelloWorldWasm,
 };
 
