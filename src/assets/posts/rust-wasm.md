@@ -33,11 +33,11 @@ Okay, so Wasm is lower level browser-speak. Our Wasm compiler is going to take t
 
 ## Bindings
 
-As I'm researching an over-arching question that has come up:
+As I'm researching an over-arching question has come up:
 
 _Wasm is a sandboxed execution environment. What do I and don't I have access to?_
 
-A lot of it comes down to bindings. As the name suggests, bindings _bind_ to external functionality. This isn't unique to Rust and Wasm. There are bindings to c++ libs, and javascript libraries, and more. Its just a way to interact with non-native code.
+A lot of it comes down to bindings. As the name suggests, bindings _bind_ to external functionality. This isn't unique to Rust and Wasm. There are bindings to C++ libs, and Javascript libraries, and more. Its just a way to interact with non-native code.
 
 As a basic example, in standard Rust we might use the `println` macro to print something to the terminal.
 
@@ -47,7 +47,7 @@ println!("Spirographs are fun!");
 
 But when running in the browser, there is no terminal - here's where bindings come in.
 
-The `web-sys` crate provides bindings to the functionality that browers have. So knowing that we are going to be running in the browser, we can use the `web-sys` crate to access the _browsers_ console.
+The `web-sys` crate provides bindings to the functionality that browers have. So knowing that we are going to be running in the browser, we can use the `web-sys` crate to access the _browsers_ console and print the message there.
 
 We also need to pass the browser something that it can comprehend - hence the construction of `JsValue`. It's constructing the string in a way Javascript comprehends, not the Wasm/Rust version we have in memory.
 
@@ -92,7 +92,7 @@ We add `wasm-bindings` as a dependency and we set the library type to be `cdylib
 }
 ```
 
-Building the package with `wasm-pack build --target web`, a `pkg/` directory is generated with everything we need inside of it. Copying it to a place accesible to the React code, it's simple to bring it in and consume (though, see [a fun memory gotcha](#a-fun-memory-gotcha)). The library even comes mostly typed!
+After building the package with `wasm-pack build --target web`, a `pkg/` directory is generated with everything we need inside of it. Copying it to a place accesible to the React code, it's simple to bring in and consume (though, see [a fun memory gotcha](#a-fun-memory-gotcha)). The library even comes mostly typed!
 
 ```github
 {
@@ -123,11 +123,11 @@ The concept behind a spirograph is that there is a single fixed circle, and then
 After consulting blogs and articles from those much wiser than I (and who have done real math more recently) I use the following equations.
 
 $$
-x = (R - r) \cdot \cos(\theta) + p \cdot \cos\left(\left(\frac{R - r}{r}\right)(\theta + \phi)\right)
+x(\theta) = (R - r) \cdot \cos(\theta) + p \cdot \cos\left(\left(\frac{R - r}{r}\right)(\theta + \phi)\right)
 $$
 
 $$
-y = (R - r) \cdot \sin(\theta) + p \cdot \sin\left((\theta + \phi) \cdot \frac{R - r}{r}\right)
+y(\theta) = (R - r) \cdot \sin(\theta) + p \cdot \sin\left((\theta + \phi) \cdot \frac{R - r}{r}\right)
 $$
 
 Where:
@@ -135,7 +135,7 @@ Where:
 |---------------|-------------------------------------------------------------------------|
 | **R** | Radius of the fixed outer circle |
 | **r** | Radius of the rolling circle |
-| **p** | Offset from the center of the rolling circle to the tracing point |
+| **p** | Offset from the center of the inner rolling circle to the tracing point |
 | **θ** | Angle of rotation |
 | **φ** | Phase angle - angular offset that adds rotation to the starting point
 
@@ -195,15 +195,17 @@ This code is really only specific to drawing spirographs and is pretty compact s
 
 ### Test it out :)
 
-This is interactive - test out some numbers! Draw some fun patterns! There is a fixed outer radius of 150.
+This is interactive - test out some numbers! Draw some fun patterns!
 
 [[Spirograph]]
 
+<br />
+
 ### A fun memory gotcha
 
-Writing this page and having multiple spirograph components embedded, each which attempted to initialize the spirograph package, revealed and interesting memory gotcha. While our library is appropriately isolated, and the spirograph instance refers to a particular `<canvas />`, when there were multiple instances on the same page, they started interacting with each other in odd ways. Drawing a spirograph in one instance, ended up putting it on the last canvas that was initialized, always.
+Writing this page and having multiple spirograph components embedded, each which attempted to initialize the spirograph package, revealed and interesting memory gotcha. While our library is appropriately isolated and the spirograph instance refers to a particular `<canvas />`, when there were multiple instances on the same page they started interacting with each other in odd ways. Drawing a spirograph in one instance ended up putting it on the last canvas that was initialized, always.
 
-This has to do with how, when the module gets initialized it's kept track of in global state. It turns out, that reinitializing the module multiple times in the same page led to memory clobbering. Moving to a shared initialization function, that returns the previous value if it had already be called resolved this issue.
+This has to do with how the module initialization is handled. The `spirogrpah-wasm` module is initialized into a _shared global state_ (this is just how ESM works). So it turns out, that reinitializing the module multiple times in the same page led to memory clobbering - each instance was sharing the same module and JS state, instead of having a single module with all the JS states. Moving to a shared initialization function, that returns the previous value if it had already be called resolved this issue.
 
 ```github
 {
@@ -227,11 +229,11 @@ thx chatgpt for helping debug :)
 
 **Performance**
 
-Something of note is that Wasm compiled Rust _can_ be faster than standard JS, but it isn't always. If the Rust code is constantly calling into the JS functionality, there wasn't anything gained performance-wise, and it would be faster to execute in pure JS. In the current implementation of the spirograph code, at each step, the canvas element is directly interacted with and we are crossing the Wasm/JS boundary for _every single point_.
+Wasm compiled Rust _can_ be faster than standard JS, but it isn't always. If the Rust code is constantly calling into the JS functionality, there wasn't anything gained performance-wise, and it would be faster to execute in pure JS. In the current implementation of the spirograph code, at each step, the canvas element is directly interacted with and we are crossing the Wasm/JS boundary for _every single point_.
 
 This is wildly inefficient. There is some batching and parallelizing that could be done, but if there is no way to create a line that isn't point by point, this amount of crosing of the Wasm/JS barrier thats needed makes this absolutely the worst way to do this (which I recognized at the begining, but seem worth mentioning again).
 
-For performance, I could chose to construct as an SVG string (wiht batching and paralleization), and hand back the whole string. But again, this isn't really the type of task that requires any heavy lifting.
+For performance, I could chose to construct an SVG string (with batching and parallelization), and hand back the whole string. But again, this isn't really the type of task that requires any heavy lifting.
 
 **Workflow stickiness**
 
@@ -240,4 +242,6 @@ For performance, I could chose to construct as an SVG string (wiht batching and 
 
 **Final thoughts**
 
-A fun and pretty quick exploration. Being my inaugural blog post on this site, it took longer to get the blog looking nice with all the components and styling and code than to get the spirograph spirograph-ing! But I think its an interesting tool to be aware of. In a previous life, I worked on a product that [rendered neurons and vessel networks](https://www.mbfbioscience.com/products/neurolucida-explorer) with thousands to millions of points, and ran analysis on them. This was all desktop based, but it is interesting to think about the bridge to local hardware in a time where aboslutely everything is cloud based and hosted.
+A fun and pretty quick exploration. Being my inaugural blog post on this site, it took longer to get the blog looking nice with all the components and styling and code than to get the spirograph spirograph-ing! But I think its an interesting tool to be aware of.
+
+In a previous life, I worked on a product that [rendered neurons and vessel networks](https://www.mbfbioscience.com/products/neurolucida-explorer) with thousands to millions of points, and ran analysis on them. This was all desktop based, but it is interesting to think about the bridge to local hardware in a time where aboslutely everything is cloud based and hosted, as well as options for doing highly intensive work in the browser.

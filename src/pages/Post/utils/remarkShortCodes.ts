@@ -1,5 +1,10 @@
 import { visit } from "unist-util-visit";
 
+/**
+ * Any paragraphs in the markdown that match [[MyInterestingComponent]], get a special
+ * `shortcode` className tag so that we can use the custom shortcode markdown component
+ * to render whatever the shortcode corresponds to. The mapping is in `ShortcodeComponent.tsx`.
+ */
 export function remarkShortcodes() {
   return (tree: any) => {
     visit(tree, "paragraph", (node, index, parent) => {
@@ -31,6 +36,7 @@ export function remarkShortcodes() {
   };
 }
 
+/** We can pass props to the custom compoents like [[MyInterestingComponent key=value]] */
 function parseProps(raw: string) {
   const props: Record<string, any> = {};
   const regex = /([a-zA-Z0-9_]+)=("(.*?)"|[^\s"]+)/g;

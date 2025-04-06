@@ -1,11 +1,6 @@
-export interface CodeSnippet {
-  name: string;
-  language: string;
-  code: string;
-  title?: string;
-  entry?: boolean;
-  foldRanges?: [number, number][];
-}
+//// Parsing helper functions for codeblocks.
+
+import { CodeSnippet } from "../components/MarkdownCodeComponent";
 
 function parseProperties(input: string): {
   properties: Record<string, string>;

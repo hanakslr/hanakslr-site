@@ -82,6 +82,7 @@ const OPTIONS: Display[] = [
   },
 ];
 
+/** Renders some predefined spirographs in a tabbed display. */
 export const SpirographDisplay = () => {
   const [index, setIndex] = useState(0);
   const [spiro, setSpiro] = useState<Spirograph>();

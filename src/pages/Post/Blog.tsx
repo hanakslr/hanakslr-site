@@ -20,7 +20,6 @@ interface BlogProps {
   subtitle?: string;
   publishedOn?: string;
   content: string;
-  customComponents?: Record<string, any>;
   coverImage?: {
     src: string;
     alt: string;
@@ -28,12 +27,14 @@ interface BlogProps {
   };
 }
 
+/**
+ * The content of the blog. Entry point for all of the fancy markdown things.
+ */
 export function Blog({
   title,
   subtitle,
   publishedOn,
   content,
-  customComponents = {},
   coverImage,
 }: BlogProps) {
   const headings = extractHeadings(content);
@@ -43,7 +44,6 @@ export function Blog({
     ...headingsMarkdownComponents,
     code: MarkdownCodeComponent,
     div: MarkdownShortcodeComponent,
-    ...customComponents,
   };
 
   return (

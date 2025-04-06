@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import init, { greet } from "./hello_pkg/hello_wasm";
 
+/** Dummy "Hello World" Wasm example */
 export const HelloWorldWasm = () => {
   const [greeting, setGreeting] = useState<string>();
   useEffect(() => {

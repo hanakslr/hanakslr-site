@@ -14,6 +14,7 @@ const initValues = {
   color: "#f0abfc",
 };
 
+/** Renders a spirograph and controls to draw more. */
 export const WasmPage = () => {
   const [spiro, setSpiro] = useState<Spirograph>();
   const [values, setValues] = useState(initValues);

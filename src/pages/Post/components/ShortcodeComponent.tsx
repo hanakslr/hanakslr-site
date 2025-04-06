@@ -9,7 +9,13 @@ const componentsMap: Record<string, React.FC<any>> = {
   HelloWasm: HelloWorldWasm,
 };
 
-// Define the shortcode component separately
+/**
+ * This is the entrypoint for embedding other components inside of the markdown
+ * generated page. The remarkShortCode plugin that is in utils adds the shortcode
+ * className to divs that meet the syntax [[ShortCodeComponent]]. And the mapping
+ * above maps that name to what should be displayed.
+ */
+
 export const MarkdownShortcodeComponent = ({
   className,
   name,

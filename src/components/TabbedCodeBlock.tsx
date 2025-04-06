@@ -21,7 +21,7 @@ import {
 import clsx from "clsx";
 import { foldEffect } from "@codemirror/language";
 import { lineNumbers, gutters } from "@codemirror/view";
-import { CodeSnippet } from "../pages/Post/utils/codeParsing";
+import { CodeSnippet } from "../pages/Post/components/MarkdownCodeComponent";
 
 interface TabbedCodeBlockProps {
   snippets: CodeSnippet[];
@@ -213,7 +213,7 @@ export const CodeBlock = ({
 
       // Fold the specified ranges after the editor is created
       if (snippet.foldRanges && view) {
-        snippet.foldRanges.forEach(([from, to]) => {
+        snippet.foldRanges.forEach(([from, to]: any) => {
           const fromPos = view.state.doc.line(from).to;
           const lineContent = view.state.doc.line(to).text;
           const toPos =

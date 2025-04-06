@@ -1,18 +1,24 @@
 import { useState, useEffect, useMemo } from "react";
-import {
-  CodeSnippet,
-  parseCodeBlock,
-  parseGitCodeBlock,
-} from "../utils/codeParsing";
+import { parseCodeBlock, parseGitCodeBlock } from "../utils/codeParsing";
 import TabbedCodeBlock, {
   CodeBlock,
 } from "../../../components/TabbedCodeBlock";
+
+export interface CodeSnippet {
+  name: string; // an id type field
+  language: string;
+  code: string; // content
+  title?: string; // optional title property
+  entry?: boolean; // if there are multiple files, which on should be visible on render
+  foldRanges?: [number, number][]; // any ranges of code that should start collapsed
+}
 
 interface CodeDisplayProps {
   snippets: CodeSnippet[];
 }
 
-export const CodeDisplay = ({ snippets }: CodeDisplayProps) => {
+/** Given snippets, renders a single or tabbed code block. */
+const CodeDisplay = ({ snippets }: CodeDisplayProps) => {
   if (snippets.length === 0) return <div>Loading...</div>;
 
   return (
