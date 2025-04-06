@@ -24,7 +24,7 @@ According to the docs: https://webassembly.org/
 
 > WebAssembly describes a memory-safe, sandboxed execution environment
 
-Okay, so Wasm is lower level browser-speak. Our Wasm compiler is going to take the Rust code, and compile it into a lower level, assembly like language, that the browser can execute. It isn't that Javascript itself with execute it - our React app will **invoke** it and then the browser will execute it.
+Okay, so Wasm is lower level browser-speak. Our Wasm compiler is going to take the Rust code, and compile it into a lower level, assembly like language, that the browser can execute. It isn't that Javascript itself will execute it - our React app will **invoke** it and then the browser will execute it.
 
 ### Some resources I'm using
 
