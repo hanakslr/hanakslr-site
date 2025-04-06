@@ -19,7 +19,12 @@ export const Header = () => {
         <p className="text-md font-thin">I'm a software engineer.</p>
         <div className="flex flex-row gap-4 py-3">
           {PROFILES.map((p) => (
-            <a href={p.url} target="_blank" rel="noopener noreferrer">
+            <a
+              href={p.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              id={p.name}
+            >
               <p.icon className="h-6 w-6" />
             </a>
           ))}
