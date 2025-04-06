@@ -47,7 +47,7 @@ println!("Spirographs are fun!");
 
 But when running in the browser, there is no terminal - here's where bindings come in.
 
-The `web-sys` crate provides bindings to the functionality that browers have. So knowing that we are going to be running in the browser, we can use the `web-sys` crate to access the _browsers_ console and print the message there.
+The `web-sys` crate provides bindings to the functionality that browsers have. So knowing that we are going to be running in the browser, we can use the `web-sys` crate to access the _browsers_ console and print the message there.
 
 We also need to pass the browser something that it can comprehend - hence the construction of `JsValue`. It's constructing the string in a way Javascript comprehends, not the Wasm/Rust version we have in memory.
 
@@ -92,7 +92,7 @@ We add `wasm-bindings` as a dependency and we set the library type to be `cdylib
 }
 ```
 
-After building the package with `wasm-pack build --target web`, a `pkg/` directory is generated with everything we need inside of it. Copying it to a place accesible to the React code, it's simple to bring in and consume (though, see [a fun memory gotcha](#a-fun-memory-gotcha)). The library even comes mostly typed!
+After building the package with `wasm-pack build --target web`, a `pkg/` directory is generated with everything we need inside of it. Copying it to a place accessible to the React code, it's simple to bring in and consume (though, see [a fun memory gotcha](#a-fun-memory-gotcha)). The library even comes mostly typed!
 
 ```github
 {
@@ -116,7 +116,7 @@ In just a couple steps, we've linked up our Rust code to React.
 
 At this point, I take a brief detour into math and refresh my memory on parametric equations.
 
-The concept behind a spirograph is that there is a single fixed circle, and then a smaller circle rotating inside of it. If you stray from these reality-based contraints, you can indeed get some [very cool results](https://www.eddaardvark.co.uk/python_patterns/spirograph.html). But to keep the math as simple as possible, we will stick with 2 gears - a larger fixed, and smaller one inside.
+The concept behind a spirograph is that there is a single fixed circle, and then a smaller circle rotating inside of it. If you stray from these reality-based constraints, you can indeed get some [very cool results](https://www.eddaardvark.co.uk/python_patterns/spirograph.html). But to keep the math as simple as possible, we will stick with 2 gears - a larger fixed, and smaller one inside.
 
 #### Equations
 
@@ -231,17 +231,17 @@ thx chatgpt for helping debug :)
 
 Wasm compiled Rust _can_ be faster than standard JS, but it isn't always. If the Rust code is constantly calling into the JS functionality, there wasn't anything gained performance-wise, and it would be faster to execute in pure JS. In the current implementation of the spirograph code, at each step, the canvas element is directly interacted with and we are crossing the Wasm/JS boundary for _every single point_.
 
-This is wildly inefficient. There is some batching and parallelizing that could be done, but if there is no way to create a line that isn't point by point, this amount of crosing of the Wasm/JS barrier thats needed makes this absolutely the worst way to do this (which I recognized at the begining, but seem worth mentioning again).
+This is wildly inefficient. There is some batching and parallelizing that could be done, but if there is no way to create a line that isn't point by point, this amount of crossing of the Wasm/JS barrier thats needed makes this absolutely the worst way to do this (which I recognized at the beginning, but seem worth mentioning again).
 
 For performance, I could chose to construct an SVG string (with batching and parallelization), and hand back the whole string. But again, this isn't really the type of task that requires any heavy lifting.
 
 **Workflow stickiness**
 
-- Compiling the package and then using it is a pretty slow turn around in the era of hot reloading. Even with having a basic HTML alongside the library and serving up wiht a simple Python server makes it faster, and I'm sure tweaks could be made to always put the newest version of the library where its being used. It still feels like a clunky workflow.
+- Compiling the package and then using it is a pretty slow turn around in the era of hot reloading. Even with having a basic HTML alongside the library and serving up with a simple Python server makes it faster, and I'm sure tweaks could be made to always put the newest version of the library where its being used. It still feels like a clunky workflow.
 - Types are not exported. Methods on classes and such are, but typed structs (as all structs with named fields are in Rust) are not exported. There may be a way to get these to export, but the compiler doesn't include them just for the consumer to have them.
 
 **Final thoughts**
 
 A fun and pretty quick exploration. Being my inaugural blog post on this site, it took longer to get the blog looking nice with all the components and styling and code than to get the spirograph spirograph-ing! But I think its an interesting tool to be aware of.
 
-In a previous life, I worked on a product that [rendered neurons and vessel networks](https://www.mbfbioscience.com/products/neurolucida-explorer) with thousands to millions of points, and ran analysis on them. This was all desktop based, but it is interesting to think about the bridge to local hardware in a time where aboslutely everything is cloud based and hosted, as well as options for doing highly intensive work in the browser.
+In a previous life, I worked on a product that [rendered neurons and vessel networks](https://www.mbfbioscience.com/products/neurolucida-explorer) with thousands to millions of points, and ran analysis on them. This was all desktop based, but it is interesting to think about the bridge to local hardware in a time where absolutely everything is cloud based and hosted, as well as options for doing highly intensive work in the browser.
