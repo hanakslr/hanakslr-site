@@ -157,7 +157,7 @@ $$
 ratio = 17 / 2
 $$
 
-The denominator is 2, so it takes 2 rotations.
+The denominator is 2, because for every 17 rotations of the little circle there are 2 rotations of the big circle even.
 
 [[SpirographGallery]]
 
