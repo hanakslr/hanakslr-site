@@ -157,7 +157,7 @@ $$
 ratio = 17 / 2
 $$
 
-The denominator is 2, because for every 17 rotations of the little circle there are 2 rotations of the big circle even.
+The denominator is 2, meaning for every 17 rotations of the little circle there are 2 rotations of the big circle even.
 
 [[SpirographGallery]]
 
@@ -203,7 +203,7 @@ This is interactive - test out some numbers! Draw some fun patterns!
 
 ### A fun memory gotcha
 
-Writing this page and having multiple spirograph components embedded, each which attempted to initialize the spirograph package, revealed and interesting memory gotcha. While our library is appropriately isolated and the spirograph instance refers to a particular `<canvas />`, when there were multiple instances on the same page they started interacting with each other in odd ways. Drawing a spirograph in one instance ended up putting it on the last canvas that was initialized, always.
+Writing this page and having multiple spirograph components embedded, each which attempted to initialize the spirograph package, revealed an interesting memory gotcha. While our library is appropriately isolated and the spirograph instance refers to a particular `<canvas />`, when there were multiple instances on the same page they started interacting with each other in odd ways. Drawing a spirograph in one instance ended up putting it on the last canvas that was initialized, always.
 
 This has to do with how the module initialization is handled. The `spirogrpah-wasm` module is initialized into a _shared global state_ (this is just how ESM works). So it turns out, that reinitializing the module multiple times in the same page led to memory clobbering - each instance was sharing the same module and JS state, instead of having a single module with all the JS states. Moving to a shared initialization function, that returns the previous value if it had already be called resolved this issue.
 
