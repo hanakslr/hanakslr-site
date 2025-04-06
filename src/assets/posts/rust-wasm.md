@@ -172,7 +172,7 @@ I chose to interact with a canvas element directly because I had future thoughts
 
 Note in `Cargo.toml` that when working with `web-sys`, there is nearly nothing included in the default package - everything is behind a feature.
 
-This code is really only specific to drawing spirographs and is pretty compact so I don't have much more to say about it.
+This code is really only specific to drawing spirographs and is pretty compact so I don't have much more to say about it until the end on performance considerations.
 
 ```github
 {

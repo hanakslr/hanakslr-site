@@ -49,34 +49,41 @@ const OPTIONS: Display[] = [
       "Prime numbers and those with high common factors make many rotations",
     drawings: [
       {
-        innerRadius: 13,
+        innerRadius: 103,
         phaseAngle: 0,
-        offset: 37,
+        offset: 50,
         color: "#f0abfc",
       },
     ],
   },
   {
-    title: "Combos",
-    description: "Just some pretty combinations",
+    title: "Pretty",
+    description: "Some nice combos",
     drawings: [
       {
-        innerRadius: 26,
+        innerRadius: 220,
         phaseAngle: 0,
-        offset: -84,
-        color: "#8b5cf6",
+        offset: 100,
+        color: "#FFD2FC",
       },
       {
-        innerRadius: 126,
+        innerRadius: 198,
         phaseAngle: 0,
-        offset: 63,
-        color: "#0d9488",
+        offset: 95,
+        color: "#57E2E5",
       },
       {
-        innerRadius: 20,
+        innerRadius: 80,
         phaseAngle: 0,
-        offset: 25,
-        color: "#f97316",
+        offset: 13,
+        color: "#acaafd",
+      },
+
+      {
+        innerRadius: 46,
+        phaseAngle: 0,
+        offset: 34,
+        color: "#F45B69",
       },
     ],
   },
@@ -132,6 +139,7 @@ export const SpirographDisplay = () => {
             className="mb-2 flex flex-col"
             style={{ color: drawing.color }}
           >
+            <div>Fixed Radius: {600 / 4}</div>
             <div>Inner Radius: {drawing.innerRadius}</div>
             <div>Phase Angle: {drawing.phaseAngle}</div>
             <div>Offset: {drawing.offset}</div>
