@@ -8,6 +8,7 @@ interface Post {
   title: string;
   publishedOn?: string;
   subtitle?: string;
+  date?: Date;
 }
 
 const getAllPosts = async (): Promise<Post[]> => {
@@ -16,7 +17,7 @@ const getAllPosts = async (): Promise<Post[]> => {
     as: "raw",
   });
 
-  return Object.entries(files).map(([filePath, content]) => {
+  const posts = Object.entries(files).map(([filePath, content]) => {
     const slug = filePath.split("/").pop()?.replace(".md", "");
     const markdownContent = content;
 
@@ -35,9 +36,19 @@ const getAllPosts = async (): Promise<Post[]> => {
       title: attributes.title || slug || "",
       publishedOn: publishedOn ? publishedOn.toLocaleDateString() : undefined,
       subtitle: attributes.subtitle,
+      date: publishedOn,
     };
   });
+
+  // Sort posts by date in descending order (newest first)
+  return posts.sort((a, b) => {
+    if (!a.date && !b.date) return 0;
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    return b.date.getTime() - a.date.getTime();
+  });
 };
+
 export const Posts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
@@ -54,7 +65,7 @@ export const Posts = () => {
     <WindowHeightSection>
       <div className="flex h-full w-full flex-col items-center justify-center rounded-xl border-2 border-yellow-400">
         <div className="flex flex-col items-center gap-2 pb-2 text-center">
-          <h1 className="w-full text-center text-2xl font-bold">Blog Posts</h1>
+          <h1 className="w-full text-center text-2xl font-bold">Notes</h1>
           <h3 className="font-mono text-xs text-slate-700">
             Sometimes I write things down
           </h3>
