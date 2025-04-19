@@ -17,12 +17,14 @@ const GITHUB_USERNAME = "hanakslr";
 
 const fetchPublicPRs = async () => {
   const since = new Date();
-  since.setMonth(since.getMonth() - 1);
+  since.setMonth(since.getMonth() - 6);
   const sinceString = since.toISOString().split("T")[0]; // Format as YYYY-MM-DD
 
   const response = await request("GET /search/issues", {
-    q: `is:pr is:public involves:${GITHUB_USERNAME} updated:>${sinceString}`,
-    per_page: 100, // Max results per page
+    q: `is:pr is:public author:${GITHUB_USERNAME} updated:>${sinceString}`,
+    sort: "updated",
+    order: "desc",
+    per_page: 10, // Max results per page
   });
 
   return response.data.items;
@@ -113,7 +115,7 @@ export const Github = () => {
             What I've been working on lately
           </h1>
           <h3 className="font-mono text-xs text-slate-700">
-            Pull requests from the last month
+            Last 10 public PRs
           </h3>
         </div>
         <div className="flex flex-col items-center gap-2 md:gap-4">
