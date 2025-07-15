@@ -21,7 +21,7 @@ const fetchPublicPRs = async () => {
   const sinceString = since.toISOString().split("T")[0]; // Format as YYYY-MM-DD
 
   const response = await request("GET /search/issues", {
-    q: `is:pr is:public author:${GITHUB_USERNAME} updated:>${sinceString}`,
+    q: `is:pr is:public author:${GITHUB_USERNAME} updated:>${sinceString} -label:skip-blog`,
     sort: "updated",
     order: "desc",
     per_page: 10, // Max results per page
