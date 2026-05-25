@@ -19,10 +19,10 @@ export const Header = () => {
             <div className="mr-8 flex flex-row gap-4 py-3">
               {PROFILES.map((p) => (
                 <a
+                  key={p.name}
                   href={p.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  id={p.name}
                 >
                   <p.icon className="h-6 w-6" />
                 </a>

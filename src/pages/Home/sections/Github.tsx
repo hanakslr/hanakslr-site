@@ -3,92 +3,90 @@ import { request } from "@octokit/request";
 import { components } from "@octokit/openapi-types";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import clsx from "clsx";
+import { truncateMarkdown } from "../../../utils/markdown";
+import React from "react";
 import {
   IconGitPullRequest,
   IconGitMerge,
   IconGitPullRequestDraft,
   IconGitPullRequestClosed,
+  IconCircleDot,
+  IconCircleCheck,
 } from "@tabler/icons-react";
 
-type PullRequest = components["schemas"]["issue-search-result-item"];
+type ActivityItem = components["schemas"]["issue-search-result-item"];
 
 const GITHUB_USERNAME = "hanakslr";
 
-const fetchPublicPRs = async () => {
+const fetchRecentActivity = async () => {
   const since = new Date();
-  since.setMonth(since.getMonth() - 6);
-  const sinceString = since.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+  since.setMonth(since.getMonth() - 18);
+  const sinceString = since.toISOString().split("T")[0];
 
   const response = await request("GET /search/issues", {
-    q: `is:pr is:public author:${GITHUB_USERNAME} updated:>${sinceString} -label:skip-blog`,
+    q: `is:public author:${GITHUB_USERNAME} updated:>${sinceString} -label:skip-blog`,
     sort: "updated",
     order: "desc",
-    per_page: 10, // Max results per page
+    per_page: 10,
   });
 
   return response.data.items;
 };
 
-type GitStatus = "Merged" | "Closed" | "Draft" | "Open";
+const GitStatusBadge = ({ item }: { item: ActivityItem }) => {
+  const isPR = item.pull_request !== undefined;
+  let bg = "bg-green-600";
+  let Icon: React.ComponentType<{ size: number }> = isPR
+    ? IconGitPullRequest
+    : IconCircleDot;
 
-const getStatus = (pr: PullRequest) => {
-  if (pr.pull_request?.merged_at) return "Merged";
-  if (pr.state === "closed") return "Closed";
-  if (pr.draft) return "Draft";
-  if (pr.state === "open") return "Open";
+  if (isPR) {
+    if (item.pull_request?.merged_at) { bg = "bg-purple-800"; Icon = IconGitMerge; }
+    else if (item.state === "closed") { bg = "bg-red-600"; Icon = IconGitPullRequestClosed; }
+    else if (item.draft) { bg = "bg-slate-600"; Icon = IconGitPullRequestDraft; }
+  } else if (item.state === "closed") {
+    bg = "bg-slate-500";
+    Icon = IconCircleCheck;
+  }
 
-  return null;
-};
-
-const GitStatusBadge = ({ status }: { status: GitStatus }) => {
-  const iconProps = { size: 14 };
   return (
-    <div
-      className={clsx(
-        "flex items-center rounded-full p-1 text-xs text-white",
-        status === "Draft" && "bg-slate-600",
-        status === "Closed" && "bg-red-600",
-        status === "Merged" && "bg-purple-800",
-        status === "Open" && "bg-green-600",
-      )}
-    >
-      {status == "Draft" && <IconGitPullRequestDraft {...iconProps} />}
-      {status == "Closed" && <IconGitPullRequestClosed {...iconProps} />}
-      {status == "Open" && <IconGitPullRequest {...iconProps} />}
-      {status == "Merged" && <IconGitMerge {...iconProps} />}
+    <div className={`flex items-center rounded-full p-1 text-xs text-white ${bg}`}>
+      <Icon size={14} />
     </div>
   );
 };
 
-const PrCard = ({ data }: { data: PullRequest }) => {
-  const repo = data.repository_url.split("/");
-  const projectName = repo.pop();
-  // const owner = repo.pop();
 
-  const status = getStatus(data);
+const ActivityCard = ({ data }: { data: ActivityItem }) => {
+  const parts = data.repository_url.split("/");
+  const projectName = parts.pop();
+  const owner = parts.pop();
+  const isPR = data.pull_request !== undefined;
+
+  const repoLabel = isPR ? `${projectName}` : `${owner}/${projectName}`;
+  const body = data.body ? truncateMarkdown(data.body) : data.body;
 
   return (
-    <a href={data.html_url} target="_blank" rel="noopener noreferrer">
-      <div className="flex w-full max-w-4xl flex-col rounded-xl border">
+    <div className="flex w-full max-w-4xl flex-col rounded-xl border">
+      <a href={data.html_url} target="_blank" rel="noopener noreferrer">
         <div className="flex flex-row items-center justify-between gap-2 rounded-t-xl bg-slate-50 p-4 py-2 font-mono text-xs text-slate-700">
           <div className="mr-auto">
-            {projectName}#{data.number}
+            {repoLabel}#{data.number}
           </div>
-          {status && <GitStatusBadge status={status} />}
+          <GitStatusBadge item={data} />
         </div>
-        <div className="p-4">
-          <div className="font-medium">{data.title}</div>
-          {data.body && (
-            <article className="prose prose-p:my-1">
-              <div className="text-xs">
-                <Markdown remarkPlugins={[remarkGfm]}>{data.body}</Markdown>
-              </div>
-            </article>
-          )}
+        <div className="px-4 pt-4 font-medium">{data.title}</div>
+      </a>
+      {body && (
+        <div className="px-4 pb-4">
+          <article className="prose prose-sm prose-headings:my-1 prose-headings:text-xs prose-headings:font-semibold prose-p:my-1">
+            <div className="text-xs">
+              <Markdown remarkPlugins={[remarkGfm]}>{body}</Markdown>
+            </div>
+          </article>
         </div>
-      </div>
-    </a>
+      )}
+    </div>
   );
 };
 
@@ -101,9 +99,9 @@ const DateLabel = ({ date }: { date: string }) => {
 };
 
 export const Github = () => {
-  const { data } = useQuery({
-    queryKey: ["public_prs"],
-    queryFn: fetchPublicPRs,
+  const { data: combined = [] } = useQuery({
+    queryKey: ["recent_activity"],
+    queryFn: fetchRecentActivity,
     staleTime: 60 * 1000 * 4,
   });
 
@@ -115,14 +113,14 @@ export const Github = () => {
             What I've been working on lately
           </h1>
           <h3 className="font-mono text-xs text-slate-700">
-            Last 10 public PRs
+            Last 10 public PRs & issues
           </h3>
         </div>
         <div className="flex flex-col items-center gap-2 md:gap-4">
-          {data &&
+          {combined.length > 0 &&
             Object.entries(
-              data.reduce<Record<string, PullRequest[]>>((groups, pr) => {
-                const date = new Date(pr.updated_at).toLocaleDateString(
+              combined.reduce<Record<string, ActivityItem[]>>((groups, item) => {
+                const date = new Date(item.updated_at).toLocaleDateString(
                   "en-US",
                   {
                     month: "2-digit",
@@ -133,17 +131,20 @@ export const Github = () => {
                 if (!groups[date]) {
                   groups[date] = [];
                 }
-                groups[date].push(pr);
+                groups[date].push(item);
                 return groups;
               }, {}),
             )
-              .sort(([dateA], [dateB]) => dateB.localeCompare(dateA))
-              .map(([date, prs]) => (
+              .sort(
+                ([dateA], [dateB]) =>
+                  new Date(dateB).getTime() - new Date(dateA).getTime(),
+              )
+              .map(([date, items]) => (
                 <div key={date} className="w-full">
                   <DateLabel date={date} />
                   <div className="flex flex-col gap-3">
-                    {prs.map((pr) => (
-                      <PrCard data={pr} key={pr.id} />
+                    {items.map((item) => (
+                      <ActivityCard data={item} key={item.id} />
                     ))}
                   </div>
                 </div>
