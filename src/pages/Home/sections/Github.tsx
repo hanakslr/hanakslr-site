@@ -79,7 +79,7 @@ const ActivityCard = ({ data }: { data: ActivityItem }) => {
       </a>
       {body && (
         <div className="px-4 pb-4">
-          <article className="prose prose-sm prose-headings:my-1 prose-headings:text-xs prose-headings:font-semibold prose-p:my-1">
+          <article className="prose prose-sm max-w-none break-words prose-headings:my-1 prose-headings:text-xs prose-headings:font-semibold prose-p:my-1">
             <div className="text-xs">
               <Markdown remarkPlugins={[remarkGfm]}>{body}</Markdown>
             </div>
@@ -116,7 +116,7 @@ export const Github = () => {
             Last 10 public PRs & issues
           </h3>
         </div>
-        <div className="flex flex-col items-center gap-2 md:gap-4">
+        <div className="flex w-full max-w-4xl flex-col items-center gap-2 md:gap-4">
           {combined.length > 0 &&
             Object.entries(
               combined.reduce<Record<string, ActivityItem[]>>((groups, item) => {
